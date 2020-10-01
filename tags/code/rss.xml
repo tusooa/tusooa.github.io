@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<rss version="2.0">
+    <channel>
+        <title>何事西风不待人 • Posts by &#34;code&#34; tag</title>
+        <link>http://tusooa.github.io</link>
+        <description>A poet, painter, and programmer.</description>
+        <language>en</language>
+        <pubDate>Thu, 30 May 2019 14:20:53 -0400</pubDate>
+        <lastBuildDate>Thu, 30 May 2019 14:20:53 -0400</lastBuildDate>
+        <category>kde</category>
+        <category>krita</category>
+        <category>c++</category>
+        <category>code</category>
+        <category>tech</category>
+        <category>帜</category>
+        <category>坑</category>
+        <category>无奈</category>
+        <category>复杂</category>
+        <item>
+            <guid isPermalink="true">http://tusooa.github.io/2019/05/30/Assistants-copy-share-assignment/</guid>
+            <title>Assistants -- copy, share, assignment</title>
+            <link>http://tusooa.github.io/2019/05/30/Assistants-copy-share-assignment/</link>
+            <category>kde</category>
+            <category>krita</category>
+            <category>c++</category>
+            <category>code</category>
+            <pubDate>Thu, 30 May 2019 14:20:53 -0400</pubDate>
+            <description><![CDATA[ &lt;p&gt;Over the last week I have been investigating into &lt;a href=&#34;https://bugs.kde.org/show_bug.cgi?id=361012&#34;&gt;Bug 361012&lt;/a&gt;, 
+on the undo history of the modification of guides. But from the very beginning I mixed up the two terms 
+“guides” and “assistants,” so I decided to &lt;a href=&#34;https://invent.kde.org/kde/krita/merge_requests/32&#34;&gt;work on both&lt;/a&gt;. 
+The work with guides is a lot simpler and will not be covered here, though. &lt;/p&gt;
+&lt;p&gt;As I write this post, the &lt;a href=&#34;https://invent.kde.org/kde/krita/tree/master&#34;&gt;master branch of Krita&lt;/a&gt; 
+does not create any undo commands for the document. I first &lt;a href=&#34;https://invent.kde.org/kde/krita/merge_requests/32/diffs?commit_id=12bc1d0730f04321c5ec304ce09f6670ef14c576&#34;&gt;added undo commands&lt;/a&gt; for adding and removing 
+assistants, which seems the easiest. The editing of them is a bit more difficult, as the dragging 
+operations involve the movement of many “handles,” the movable round buttons that define the position 
+of one or more assistants. The source code on master for implementing such actions is quite complicated 
+and involves a great number of cases. It would be another great endeavour to put all these bunches of 
+code into a &lt;code&gt;KUndo2Command&lt;/code&gt;. But, another thing I have experimented with and I will be working on 
+will immediately clear the clouds.&lt;/p&gt;
+&lt;p&gt;So I just thought of the copy-on-write mechanism, and yes, why not? Though COW itself is not 
+actually implemented for the guides, it does seem inspiring. I mean, we can just save a copy 
+of all assistants and, when needed, restore that. &lt;/p&gt;
+&lt;p&gt;The main problem here is the handles. They are represented as shared pointers in individual 
+assistants and may be shared between different ones (e.g. two perspectives share two corner 
+handles and one side handles). When we take a clone of the list of assistants it will be 
+necessary to keep this kind of relationship. My solution is to use a &lt;code&gt;QMap&lt;/code&gt; of pointers, 
+which seems to coincide with the logic of exporting to xml, but I had yet to read that part
+of the code when writing mine so I did not know about that. The logic is to check, for 
+every handle, whether there is a mapping relationship in the map. If there is, we reuse that 
+handle, and if not, we create a new one with the same position and record that relationship 
+in our &lt;code&gt;QMap&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;But some display properties are not to be recorded into the undo history. Such properties 
+include the changing of color, visibility, etc. To resolve this problem, I put these data into 
+a shared pointer and, when we are cloning an assistant for undo/redo, we will reuse that pointer.
+When we replace the assistant list with the one recorded, all the display properties will remain 
+since the data are shared. &lt;/p&gt;
+&lt;p&gt;And for the next several weeks I will move onto the &lt;a href=&#34;https://phabricator.kde.org/T10991&#34;&gt;Snapshot Docker&lt;/a&gt;.&lt;/p&gt;
+ ]]></description>
+        </item>
+    </channel>
+</rss>

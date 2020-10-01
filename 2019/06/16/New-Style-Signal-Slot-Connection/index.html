@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"tusooa.github.io","root":"/","scheme":"Mist","version":"8.0.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
+  </script>
+
+  <meta name="description" content="Yes, I know. The last post on the assistants is rather boring. And yet these days I have been  working on the snapshot docker, though  it still seems a little (just a little, you see) unfinished as Dm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="New Style Signal&#x2F;Slot Connection">
+<meta property="og:url" content="http://tusooa.github.io/2019/06/16/New-Style-Signal-Slot-Connection/index.html">
+<meta property="og:site_name" content="何事西风不待人">
+<meta property="og:description" content="Yes, I know. The last post on the assistants is rather boring. And yet these days I have been  working on the snapshot docker, though  it still seems a little (just a little, you see) unfinished as Dm">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-06-17T00:12:56.000Z">
+<meta property="article:modified_time" content="2020-09-30T05:03:59.014Z">
+<meta property="article:author" content="tusooa">
+<meta property="article:tag" content="kde">
+<meta property="article:tag" content="krita">
+<meta property="article:tag" content="c++">
+<meta property="article:tag" content="tech">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://tusooa.github.io/2019/06/16/New-Style-Signal-Slot-Connection/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>New Style Signal/Slot Connection | 何事西风不待人</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">何事西风不待人</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="tusooa"
+      src="https://secure.gravatar.com/avatar/7a3e6041334f3007176efc960fb6ba45?size=400">
+  <p class="site-author-name" itemprop="name">tusooa</p>
+  <div class="site-description" itemprop="description">A poet, painter, and programmer.</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://matrix.to/#/@tusooa:tusooa.xyz" title="Matrix → https:&#x2F;&#x2F;matrix.to&#x2F;#&#x2F;@tusooa:tusooa.xyz" rel="noopener" target="_blank"><i class="fa fa-hashtag fa-fw"></i>Matrix</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitlab.com/tusooa" title="GitLab → https:&#x2F;&#x2F;gitlab.com&#x2F;tusooa" rel="noopener" target="_blank"><i class="fab fa-gitlab fa-fw"></i>GitLab</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://invent.kde.org/tusooaw" title="KDE Invent → https:&#x2F;&#x2F;invent.kde.org&#x2F;tusooaw" rel="noopener" target="_blank"><i class="fab fa-gitlab fa-fw"></i>KDE Invent</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="Feed → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>Feed</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://en.wikipedia.org/wiki/Ejective_consonant" title="Ejective → https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Ejective_consonant" rel="noopener" target="_blank"><i class="fa fa-eject fa-fw"></i>Ejective</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+      
+
+      
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://tusooa.github.io/2019/06/16/New-Style-Signal-Slot-Connection/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://secure.gravatar.com/avatar/7a3e6041334f3007176efc960fb6ba45?size=400">
+      <meta itemprop="name" content="tusooa">
+      <meta itemprop="description" content="A poet, painter, and programmer.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="何事西风不待人">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          New Style Signal/Slot Connection
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-06-16 20:12:56" itemprop="dateCreated datePublished" datetime="2019-06-16T20:12:56-04:00">2019-06-16</time>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2019/06/16/New-Style-Signal-Slot-Connection/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/06/16/New-Style-Signal-Slot-Connection/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+    <!-- Use tags to replace categories -->
+    <span class="post-meta-item">
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/tags/kde/" itemprop="url" rel="index"><span itemprop="name">kde</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/tags/krita/" itemprop="url" rel="index"><span itemprop="name">krita</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/tags/c/" itemprop="url" rel="index"><span itemprop="name">c++</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/tags/tech/" itemprop="url" rel="index"><span itemprop="name">tech</span></a>
+        </span>
+    </span>
+
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>Yes, I know. The last post on the assistants is rather boring. And yet these days I have been 
+working on the <a target="_blank" rel="noopener" href="https://invent.kde.org/kde/krita/merge_requests/41">snapshot docker</a>, though 
+it still seems a little (just a little, you see) unfinished as Dmitry is said to experience 
+a relatively high delay when switching between snapshots. However this is not what I can reproduce 
+on my older laptop, so I am really waiting for his test results in order to further investigate 
+the problem.</p>
+<p>But there <em>is</em> something interesting happening just when I am randomly testing things. From
+Krita’s debug output, I saw <code>QObject::connect()</code> complaining about the arguments I passed, 
+saying it is expecting parenthesis. “Okay,” I thought, “then there have to be something wrong 
+with the <a target="_blank" rel="noopener" href="https://invent.kde.org/kde/krita/merge_requests/41/diffs?commit_id=8c465f12139318e86ab36d343e1db8bbbb141e06">code I wrote</a>.” 
+And that was quite confusing. I remember having used member function pointers in those places, 
+got a compile-time error since <code>KisSignalAutoConnectionsStore</code> did not support the new syntax,
+then switched back to the <code>SINGAL()</code> and <code>SLOT()</code> macros. <code>KisSignalAutoConnectionsStore</code> is 
+a helper class to quickly (dis)connect a group of connections. One can use the <code>addConnection()</code> 
+method to add a connection, and use <code>clear()</code> to remove all connections made before. </p>
+<p>Well, everything good, apart from the fact that I missed the parenthesis, which I did not 
+discover until I looked into the debug output. So I asked Dmitry why not add the new syntax 
+to <code>KisSignalAutoConnectionsStore</code>, and he said we should. </p>
+<p>What is good about the new syntax is compile-time checking. We probably do not want our connections
+to fail to be made only when you run the program, just because there is a typo in the signature. 
+That is definitely tiring and hard to catch (hmm, I did not notice the problem until today I 
+randomly glanced at the command line; it might be worse if I shipped the snapshot docker together 
+with those careless bugs).</p>
+<p>The modification to the code seems straightforward. All what happens is in the <code>KisSignalAutoConnection</code> 
+class. In its constructor, the connection is made using <code>QObject::connect()</code>; in its destructor, 
+the connection is removed by passing the same sets of arguments to <code>QObject::disconnect()</code> currently 
+in <code>master</code>. The signature is just <code>KisSignalAutoConnection(const QObject *, const char *, const QObject *, const char *)</code>, 
+as <code>SIGNAL()</code> and <code>SLOT()</code> macros are but to append their arguments to the string <code>&quot;1&quot;</code> and <code>&quot;2&quot;</code> respectively. </p>
+<p>So the problem we have is we do not want the arguments that specify the signals and/or slots 
+to be just strings. We want them to be pointers to member functions, or maybe lambdas. 
+According to QObject document, the signature for new-style <code>connect()</code> is:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">QMetaObject::Connection <span class="title">QObject::connect</span><span class="params">(<span class="keyword">const</span> QObject *sender, PointerToMemberFunction signal, <span class="keyword">const</span> QObject *context, Functor functor, Qt::ConnectionType type = Qt::AutoConnection)</span></span></span><br></pre></td></tr></table></figure>
+<p>Okay, so we know that <code>sender</code> and <code>receiver</code> should be pointers to <code>QObject</code>s, and 
+either the type of <code>signal</code> or <code>functor</code> we do not know. 
+Now let’s make our <code>KisSignalAutoConnection</code> constructor a template function: </p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="class"><span class="keyword">class</span> <span class="title">Signal</span>, <span class="title">class</span> <span class="title">Method</span>&gt;</span></span><br><span class="line"><span class="class"><span class="title">inline</span> <span class="title">KisSignalAutoConnection</span>(<span class="title">const</span> <span class="title">QObject</span> *<span class="title">sender</span>, <span class="title">Signal</span> <span class="title">signal</span>,</span></span><br><span class="line"><span class="class">                               <span class="title">const</span> <span class="title">QObject</span> *<span class="title">receiver</span>, <span class="title">Method</span> <span class="title">method</span></span></span><br><span class="line"><span class="class">                               <span class="title">Qt</span>:</span>:ConnectionType type = Qt::AutoConnection);</span><br></pre></td></tr></table></figure>
+<p>But when these parameters are passed to <code>QObject::connect()</code>, we get a compile-time error, saying 
+there is no matching overload for <code>connect()</code>.</p>
+<p>Why?</p>
+<p>The answer is the Qt documentation is simplifying, if not hiding, the truth. The real definition 
+for <code>connect()</code> is found in Line 227 of <code>qobject.h</code>:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Func1, <span class="keyword">typename</span> Func2&gt;</span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> QMetaObject::Connection <span class="title">connect</span><span class="params">(<span class="keyword">const</span> <span class="keyword">typename</span> QtPrivate::FunctionPointer&lt;Func1&gt;::Object *sender, Func1 signal,</span></span></span><br><span class="line"><span class="function"><span class="params">                                 <span class="keyword">const</span> <span class="keyword">typename</span> QtPrivate::FunctionPointer&lt;Func2&gt;::Object *receiver, Func2 slot,</span></span></span><br><span class="line"><span class="function"><span class="params">                                 Qt::ConnectionType type = Qt::AutoConnection)</span></span></span><br></pre></td></tr></table></figure>
+<p>And tracking down the definition of <code>QtPrivate::FunctionPointer</code>, we get it in <code>qobjectdefs_impl.h</code>:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="class"><span class="keyword">class</span> <span class="title">Obj</span>, <span class="title">typename</span> <span class="title">Ret</span>, <span class="title">typename</span>... <span class="title">Args</span>&gt; <span class="title">struct</span> <span class="title">FunctionPointer</span>&lt;Ret (Obj::*) (Args...)&gt;</span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">typedef</span> Obj Object;</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>And seeing what we have passed to <code>KisSignalAutoConnection</code> (in the <a target="_blank" rel="noopener" href="https://invent.kde.org/kde/krita/merge_requests/41/diffs?commit_id=39262a9385fb933ab428f4a72939a692994e0f21#dbe442eaf45dc765d904fe6d9922b309d19f1d5a">test code</a>):</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">KisSignalAutoConnectionsStore conn;</span><br><span class="line">conn.addConnection(test1.data(), &amp;TestClass::sigTest1, test2.data(), &amp;TestClass::slotTest1);</span><br></pre></td></tr></table></figure>
+<p>We can see that <code>Func1</code> is a member function of <code>TestClass</code>, so <code>QtPrivate::FunctionPointer&lt;Func1&gt;::Object</code> 
+is just <code>TestClass</code>. But the constructor of <code>KisSignalAutoConnection</code> receives a <code>const QObject *</code>. 
+The problem here is that <code>connect()</code> is expecting a <code>const TestClass *</code>, but we give them a <code>const QObject *</code>. 
+A base class pointer cannot be implicitly converted to a derived class pointer, so we have that error. </p>
+<p>The resolution seems pretty simple, as we only need to include the types of <code>sender</code> and <code>receiver</code> 
+into the template, and pass everything as-is to <code>QObject::connect()</code>: </p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="class"><span class="keyword">class</span> <span class="title">Sender</span>, <span class="title">class</span> <span class="title">Signal</span>, <span class="title">class</span> <span class="title">Receiver</span>, <span class="title">class</span> <span class="title">Method</span>&gt;</span></span><br><span class="line"><span class="class"><span class="title">inline</span> <span class="title">KisSignalAutoConnection</span>(<span class="title">Sender</span> <span class="title">sender</span>, <span class="title">Signal</span> <span class="title">signal</span>, <span class="title">Receiver</span> <span class="title">receiver</span>, <span class="title">Method</span> <span class="title">method</span>,</span></span><br><span class="line"><span class="class">                               <span class="title">Qt</span>:</span>:ConnectionType type = Qt::AutoConnection);</span><br></pre></td></tr></table></figure>
+<p>Sounds viable. But how can we store the four parameters? It might be intuitive to make another base class, 
+say, <code>KisSignalAutoConnectionBase()</code>, and make <code>KisSignalAutoConnection</code> a template class, so we can 
+store <code>sender</code>, <code>receiver</code>, etc.</p>
+<p>But wait, isn’t this just too complex? First of all, we do not have any overridden functions 
+except for the destructor. What is more, we do not seem to have any valuable things in that base 
+class – it would be an empty class. The use of inheritance here is ugly and useless. </p>
+<p>And, we do not need to store the four parameters at all. <code>QObject::connect()</code> returns a 
+<code>QMetaObject::Connection</code>, which can be used later to <code>disconnect()</code> it. So instead of 
+the parameters passed to <code>connect()</code>, we just store the <code>Connection</code> object. And that is not 
+part of the template:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">template</span>&lt;<span class="class"><span class="keyword">class</span> <span class="title">Sender</span>, <span class="title">class</span> <span class="title">Signal</span>, <span class="title">class</span> <span class="title">Receiver</span>, <span class="title">class</span> <span class="title">Method</span>&gt;</span></span><br><span class="line"><span class="class">    <span class="title">inline</span> <span class="title">KisSignalAutoConnection</span>(<span class="title">Sender</span> <span class="title">sender</span>, <span class="title">Signal</span> <span class="title">signal</span>, <span class="title">Receiver</span> <span class="title">receiver</span>, <span class="title">Method</span> <span class="title">method</span>,</span></span><br><span class="line"><span class="class">                                   <span class="title">Qt</span>:</span>:ConnectionType type = Qt::AutoConnection)</span><br><span class="line">        : m_connection(QObject::connect(sender, signal, receiver, method, type))</span><br><span class="line">    &#123;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">inline</span> ~KisSignalAutoConnection()</span><br><span class="line">    &#123;</span><br><span class="line">        QObject::disconnect(m_connection);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    QMetaObject::Connection m_connection;</span><br></pre></td></tr></table></figure>
+<p>And with the <a target="_blank" rel="noopener" href="https://invent.kde.org/kde/krita/merge_requests/41/diffs?commit_id=39262a9385fb933ab428f4a72939a692994e0f21#dbe442eaf45dc765d904fe6d9922b309d19f1d5a">test code</a> mentioned above, 
+we do make sure that the new implementation works well with both syntaxes. </p>
+<p>So, great, krita developers, we can use the new syntax for auto connections as well. </p>
+<p>PS: There will soon be another post on my work of the snapshot docker – it’s almost finished!</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>tusooa
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="http://tusooa.github.io/2019/06/16/New-Style-Signal-Slot-Connection/" title="New Style Signal&#x2F;Slot Connection">http://tusooa.github.io/2019/06/16/New-Style-Signal-Slot-Connection/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/kde/" rel="tag"># kde</a>
+              <a href="/tags/krita/" rel="tag"># krita</a>
+              <a href="/tags/c/" rel="tag"># c++</a>
+              <a href="/tags/tech/" rel="tag"># tech</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/05/30/Assistants-copy-share-assignment/" rel="prev" title="Assistants -- copy, share, assignment">
+                  <i class="fa fa-chevron-left"></i> Assistants -- copy, share, assignment
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/06/21/Snapshot-Docker/" rel="next" title="Snapshot Docker">
+                  Snapshot Docker <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+  
+  
+  
+
+
+
+      
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      
+
+      
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">tusooa</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://thistusooa.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://tusooa.github.io/2019/06/16/New-Style-Signal-Slot-Connection/";
+    this.page.identifier = "2019/06/16/New-Style-Signal-Slot-Connection/";
+    this.page.title = "New Style Signal/Slot Connection";
+    };
+  NexT.utils.loadComments('#disqus_thread', () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://thistusooa.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

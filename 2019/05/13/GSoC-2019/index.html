@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"tusooa.github.io","root":"/","scheme":"Mist","version":"8.0.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
+  </script>
+
+  <meta name="description" content="This summer will be a little bit interesting as I joined the Google Summer of Code (GSoC). The software I will be working on is Krita. Krita is a painting software I have been using for more than one">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GSoC 2019">
+<meta property="og:url" content="http://tusooa.github.io/2019/05/13/GSoC-2019/index.html">
+<meta property="og:site_name" content="何事西风不待人">
+<meta property="og:description" content="This summer will be a little bit interesting as I joined the Google Summer of Code (GSoC). The software I will be working on is Krita. Krita is a painting software I have been using for more than one">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-05-13T15:16:48.000Z">
+<meta property="article:modified_time" content="2020-09-30T03:55:13.256Z">
+<meta property="article:author" content="tusooa">
+<meta property="article:tag" content="kde">
+<meta property="article:tag" content="krita">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://tusooa.github.io/2019/05/13/GSoC-2019/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>GSoC 2019 | 何事西风不待人</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">何事西风不待人</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="tusooa"
+      src="https://secure.gravatar.com/avatar/7a3e6041334f3007176efc960fb6ba45?size=400">
+  <p class="site-author-name" itemprop="name">tusooa</p>
+  <div class="site-description" itemprop="description">A poet, painter, and programmer.</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://matrix.to/#/@tusooa:tusooa.xyz" title="Matrix → https:&#x2F;&#x2F;matrix.to&#x2F;#&#x2F;@tusooa:tusooa.xyz" rel="noopener" target="_blank"><i class="fa fa-hashtag fa-fw"></i>Matrix</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitlab.com/tusooa" title="GitLab → https:&#x2F;&#x2F;gitlab.com&#x2F;tusooa" rel="noopener" target="_blank"><i class="fab fa-gitlab fa-fw"></i>GitLab</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://invent.kde.org/tusooaw" title="KDE Invent → https:&#x2F;&#x2F;invent.kde.org&#x2F;tusooaw" rel="noopener" target="_blank"><i class="fab fa-gitlab fa-fw"></i>KDE Invent</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="Feed → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>Feed</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://en.wikipedia.org/wiki/Ejective_consonant" title="Ejective → https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Ejective_consonant" rel="noopener" target="_blank"><i class="fa fa-eject fa-fw"></i>Ejective</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+      
+
+      
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://tusooa.github.io/2019/05/13/GSoC-2019/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://secure.gravatar.com/avatar/7a3e6041334f3007176efc960fb6ba45?size=400">
+      <meta itemprop="name" content="tusooa">
+      <meta itemprop="description" content="A poet, painter, and programmer.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="何事西风不待人">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          GSoC 2019
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-05-13 11:16:48" itemprop="dateCreated datePublished" datetime="2019-05-13T11:16:48-04:00">2019-05-13</time>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2019/05/13/GSoC-2019/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/05/13/GSoC-2019/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+    <!-- Use tags to replace categories -->
+    <span class="post-meta-item">
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/tags/kde/" itemprop="url" rel="index"><span itemprop="name">kde</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/tags/krita/" itemprop="url" rel="index"><span itemprop="name">krita</span></a>
+        </span>
+    </span>
+
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>This summer will be a little bit interesting as I joined the
+<a target="_blank" rel="noopener" href="https://summerofcode.withgoogle.com/">Google Summer of Code</a> (GSoC).
+The software I will be working on is <a target="_blank" rel="noopener" href="https://krita.org/">Krita</a>.
+Krita is a painting software I have been using for more than one year.
+Since the (pre)release of Krita 4.0, I use it to <a target="_blank" rel="noopener" href="https://www.deviantart.com/thistusooa">paint all my works</a>.</p>
+<p>Before using Krita, I used to use PaintToolSAI, and there are quite a lot of concepts
+and functionalities in it that I find really useful; after getting involved in the
+Krita community I am pretty lucky to be able to introduce these little shiny stars
+to our community, and even <a target="_blank" rel="noopener" href="https://github.com/tusooa/krita-docker-color-slider">implement some of them</a>.</p>
+<p><a target="_blank" rel="noopener" href="https://phabricator.kde.org/T10901">My project for GSoC</a> is on
+<a target="_blank" rel="noopener" href="https://invent.kde.org/kde/krita/tree/master/libs/command">the undo/redo system in Krita</a>. 
+The system currently works using an undo stack to storage individual changes to the document,
+and invoking these commands to perform undos and redos. This system is complex and not easy
+to maintain. As <a target="_blank" rel="noopener" href="https://invent.kde.org/dkazakov">Dmitry</a> suggests, a better solution would
+be <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=QGcVXgEVMJg">storing the states of the document as shallow copies</a>, 
+since it simplifies the system and make history brushes possible. It would be a rather huge
+and fundamental change in the code, and he recommends me to experiment with vector layers first.</p>
+<p>Another part of the project, which is not a research, is the snapshot docker that would allow
+users to temporarily save some states of the document and return to them quickly at a later time.
+This is an enhancement on the GUI level, as the tile data in paint layers are shallow copied, making
+it possible to make a clone of the document relatively fast. </p>
+<p>I will make more posts on KDE and Krita in the near future. Let’s keep in touch! (.w.)</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>tusooa
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="http://tusooa.github.io/2019/05/13/GSoC-2019/" title="GSoC 2019">http://tusooa.github.io/2019/05/13/GSoC-2019/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/kde/" rel="tag"># kde</a>
+              <a href="/tags/krita/" rel="tag"># krita</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/04/29/short-code/" rel="prev" title="短代码(一个马后炮)">
+                  <i class="fa fa-chevron-left"></i> 短代码(一个马后炮)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/05/18/Polymorphism-and-Implicit-Sharing/" rel="next" title="Polymorphism and Implicit Sharing">
+                  Polymorphism and Implicit Sharing <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+  
+  
+  
+
+
+
+      
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      
+
+      
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">tusooa</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://thistusooa.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://tusooa.github.io/2019/05/13/GSoC-2019/";
+    this.page.identifier = "2019/05/13/GSoC-2019/";
+    this.page.title = "GSoC 2019";
+    };
+  NexT.utils.loadComments('#disqus_thread', () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://thistusooa.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

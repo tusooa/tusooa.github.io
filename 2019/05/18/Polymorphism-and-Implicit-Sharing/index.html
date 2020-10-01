@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"tusooa.github.io","root":"/","scheme":"Mist","version":"8.0.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
+  </script>
+
+  <meta name="description" content="Recently I have been researching into possibilities to make members of KoShape copy-on-write.  At first glance, it seems enough to declare d-pointers as some subclass of QSharedDataPointer  (see Qt’s">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Polymorphism and Implicit Sharing">
+<meta property="og:url" content="http://tusooa.github.io/2019/05/18/Polymorphism-and-Implicit-Sharing/index.html">
+<meta property="og:site_name" content="何事西风不待人">
+<meta property="og:description" content="Recently I have been researching into possibilities to make members of KoShape copy-on-write.  At first glance, it seems enough to declare d-pointers as some subclass of QSharedDataPointer  (see Qt’s">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-05-18T18:18:41.000Z">
+<meta property="article:modified_time" content="2020-09-30T03:55:13.256Z">
+<meta property="article:author" content="tusooa">
+<meta property="article:tag" content="kde">
+<meta property="article:tag" content="krita">
+<meta property="article:tag" content="c++">
+<meta property="article:tag" content="tech">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://tusooa.github.io/2019/05/18/Polymorphism-and-Implicit-Sharing/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Polymorphism and Implicit Sharing | 何事西风不待人</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">何事西风不待人</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#polymorphism-and-value-semantics"><span class="nav-number">1.</span> <span class="nav-text">polymorphism and value semantics</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#d-pointers-and-QSharedData"><span class="nav-number">2.</span> <span class="nav-text">d-pointers and QSharedData</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#derived-d-pointer"><span class="nav-number">2.1.</span> <span class="nav-text">derived d-pointer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#making-d-pointer-QSharedDataPointer"><span class="nav-number">2.2.</span> <span class="nav-text">making d-pointer QSharedDataPointer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Q-D-revisited"><span class="nav-number">2.3.</span> <span class="nav-text">Q_D, revisited</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#virtual-clones"><span class="nav-number">2.4.</span> <span class="nav-text">virtual clones</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#the-Descendents-of-%E2%80%A6"><span class="nav-number">3.</span> <span class="nav-text">the Descendents of …</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="tusooa"
+      src="https://secure.gravatar.com/avatar/7a3e6041334f3007176efc960fb6ba45?size=400">
+  <p class="site-author-name" itemprop="name">tusooa</p>
+  <div class="site-description" itemprop="description">A poet, painter, and programmer.</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://matrix.to/#/@tusooa:tusooa.xyz" title="Matrix → https:&#x2F;&#x2F;matrix.to&#x2F;#&#x2F;@tusooa:tusooa.xyz" rel="noopener" target="_blank"><i class="fa fa-hashtag fa-fw"></i>Matrix</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitlab.com/tusooa" title="GitLab → https:&#x2F;&#x2F;gitlab.com&#x2F;tusooa" rel="noopener" target="_blank"><i class="fab fa-gitlab fa-fw"></i>GitLab</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://invent.kde.org/tusooaw" title="KDE Invent → https:&#x2F;&#x2F;invent.kde.org&#x2F;tusooaw" rel="noopener" target="_blank"><i class="fab fa-gitlab fa-fw"></i>KDE Invent</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="Feed → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>Feed</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://en.wikipedia.org/wiki/Ejective_consonant" title="Ejective → https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Ejective_consonant" rel="noopener" target="_blank"><i class="fa fa-eject fa-fw"></i>Ejective</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+      
+
+      
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://tusooa.github.io/2019/05/18/Polymorphism-and-Implicit-Sharing/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://secure.gravatar.com/avatar/7a3e6041334f3007176efc960fb6ba45?size=400">
+      <meta itemprop="name" content="tusooa">
+      <meta itemprop="description" content="A poet, painter, and programmer.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="何事西风不待人">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Polymorphism and Implicit Sharing
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-05-18 14:18:41" itemprop="dateCreated datePublished" datetime="2019-05-18T14:18:41-04:00">2019-05-18</time>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2019/05/18/Polymorphism-and-Implicit-Sharing/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/05/18/Polymorphism-and-Implicit-Sharing/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+    <!-- Use tags to replace categories -->
+    <span class="post-meta-item">
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/tags/kde/" itemprop="url" rel="index"><span itemprop="name">kde</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/tags/krita/" itemprop="url" rel="index"><span itemprop="name">krita</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/tags/c/" itemprop="url" rel="index"><span itemprop="name">c++</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/tags/tech/" itemprop="url" rel="index"><span itemprop="name">tech</span></a>
+        </span>
+    </span>
+
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>Recently I have been researching into possibilities to make members of <code>KoShape</code> copy-on-write. 
+At first glance, it seems enough to declare d-pointers as some subclass of <code>QSharedDataPointer</code> 
+(see Qt’s <a target="_blank" rel="noopener" href="https://doc.qt.io/qt-5/implicit-sharing.html">implicit sharing</a>) and then replace 
+pointers with instances. However, there remain a number of problems to be solved, one of them 
+being polymorphism.</p>
+<h2 id="polymorphism-and-value-semantics"><a href="#polymorphism-and-value-semantics" class="headerlink" title="polymorphism and value semantics"></a>polymorphism and value semantics</h2><p>In the <a target="_blank" rel="noopener" href="https://invent.kde.org/kde/krita/blob/aeb8a1097ad58eaff91aa34c40b18e82428b0a3a/libs/flake/KoShape_p.h#L65">definition</a> 
+of <code>KoShapePrivate</code> class, the member <code>fill</code> is stored as a <code>QSharedPointer</code>:</p>
+<pre><code>QSharedPointer&lt;KoShapeBackground&gt; fill;
+</code></pre><p>There are a number of subclasses of <code>KoShapeBackground</code>, including <code>KoColorBackground</code>, 
+<code>KoGradientBackground</code>, to name just a few. We cannot store an instance of <code>KoShapeBackground</code> 
+directly since we want polymorphism. But, well, making <code>KoShapeBackground</code> copy-on-write seems to have 
+nothing to do with whether we store it as a pointer or instance. So let’s just put it here – 
+I will come back to this question at the end of this post.</p>
+<h2 id="d-pointers-and-QSharedData"><a href="#d-pointers-and-QSharedData" class="headerlink" title="d-pointers and QSharedData"></a>d-pointers and <code>QSharedData</code></h2><p>The <code>KoShapeBackground</code> heirarchy (similar to the <code>KoShape</code> one) uses derived d-pointers
+for storing private data. To make things easier, I will here use a small example to 
+elaborate on its use. </p>
+<h3 id="derived-d-pointer"><a href="#derived-d-pointer" class="headerlink" title="derived d-pointer"></a>derived d-pointer</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AbstractPrivate</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    AbstractPrivate() : var(<span class="number">0</span>) &#123;&#125;</span><br><span class="line">    <span class="keyword">virtual</span> ~AbstractPrivate() = <span class="keyword">default</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> var;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Abstract</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">// it is not yet copy-constructable; we will come back to this later</span></span><br><span class="line">    <span class="comment">// Abstract(const Abstract &amp;other) = default;</span></span><br><span class="line">    ~Abstract() = <span class="keyword">default</span>;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">Abstract</span><span class="params">(AbstractPrivate &amp;dd)</span> : <span class="title">d_ptr</span><span class="params">(&amp;dd)</span> </span>&#123;&#125;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span> <span class="keyword">const</span> </span>= <span class="number">0</span>;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">modifyVar</span><span class="params">()</span> </span>= <span class="number">0</span>;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    QScopedPointer&lt;AbstractPrivate&gt; d_ptr;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    Q_DECLARE_PRIVATE(Abstract)</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DerivedPrivate</span> :</span> <span class="keyword">public</span> AbstractPrivate</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    DerivedPrivate() : AbstractPrivate(), bar(<span class="number">0</span>) &#123;&#125;</span><br><span class="line">    <span class="keyword">virtual</span> ~DerivedPrivate() = <span class="keyword">default</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> bar;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Derived</span> :</span> <span class="keyword">public</span> Abstract</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Derived() : Abstract(*(<span class="keyword">new</span> DerivedPrivate)) &#123;&#125;</span><br><span class="line">    <span class="comment">// it is not yet copy-constructable</span></span><br><span class="line">    <span class="comment">// Derived(const Derived &amp;other) = default;</span></span><br><span class="line">    ~Derived() = <span class="keyword">default</span>;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">Derived</span><span class="params">(AbstractPrivate &amp;dd)</span> : <span class="title">Abstract</span><span class="params">(dd)</span> </span>&#123;&#125;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span> <span class="keyword">const</span> <span class="keyword">override</span> </span>&#123; Q_D(<span class="keyword">const</span> Derived); <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;foo &quot;</span> &lt;&lt; d-&gt;var &lt;&lt; <span class="string">&quot; &quot;</span> &lt;&lt; d-&gt;bar &lt;&lt; <span class="built_in">endl</span>; &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">modifyVar</span><span class="params">()</span> <span class="keyword">override</span> </span>&#123; Q_D(Derived); d-&gt;var++; d-&gt;bar++; &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    Q_DECLARE_PRIVATE(Derived)</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>The main goal of making <code>DerivedPrivate</code> a subclass of <code>AbstractPrivate</code> is to avoid multiple 
+d-pointers in the structure. Note that there are constructors taking a reference to the 
+private data object. These are to make it possible for a <code>Derived</code> object to use the same
+d-pointer as its <code>Abstract</code> parent. The <code>Q_D()</code> macro is used to convert the <code>d_ptr</code>, which is a 
+pointer to <code>AbstractPrivate</code> to another pointer, named <code>d</code>, of some of its descendent type; 
+here, it is a <code>DerivedPrivate</code>. It is used together with the <code>Q_DECLARE_PRIVATE()</code> macro 
+in the class definition 
+and has a rather complicated implementation in the Qt headers. But for simplicity, it does 
+not hurt for now to understand it as the following:</p>
+<pre><code>#define Q_D(Class) Class##Private *const d = reinterpret_cast&lt;Class##Private *&gt;(d_ptr.data())
+</code></pre><p>where <code>Class##Private</code> means simply to append string <code>Private</code> to (the macro argument) <code>Class</code>. </p>
+<p>Now let’s test it by creating a pointer to <code>Abstract</code> and give it a <code>Derived</code> object:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="function">QScopedPointer&lt;Abstract&gt; <span class="title">ins</span><span class="params">(<span class="keyword">new</span> Derived())</span></span>;</span><br><span class="line">    ins-&gt;foo();</span><br><span class="line">    ins-&gt;modifyVar();</span><br><span class="line">    ins-&gt;foo();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Output:</p>
+<pre><code>foo 0 0
+foo 1 1
+</code></pre><p>Looks pretty viable – everything’s working well! – What if we use Qt’s implicit sharing? Just 
+make <code>AbstractPrivate</code> a subclass of <code>QSharedData</code> and replace <code>QScopedPointer</code> with <code>QSharedDataPointer</code>.</p>
+<h3 id="making-d-pointer-QSharedDataPointer"><a href="#making-d-pointer-QSharedDataPointer" class="headerlink" title="making d-pointer QSharedDataPointer"></a>making d-pointer <code>QSharedDataPointer</code></h3><p>In the last section, we commented out the copy constructors since <code>QScopedPointer</code> is not copy-constructable,
+but here <code>QSharedDataPointer</code> is copy-constructable, so we add them back:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AbstractPrivate</span> :</span> <span class="keyword">public</span> QSharedData</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    AbstractPrivate() : var(<span class="number">0</span>) &#123;&#125;</span><br><span class="line">    <span class="keyword">virtual</span> ~AbstractPrivate() = <span class="keyword">default</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> var;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Abstract</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Abstract(<span class="keyword">const</span> Abstract &amp;other) = <span class="keyword">default</span>;</span><br><span class="line">    ~Abstract() = <span class="keyword">default</span>;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">Abstract</span><span class="params">(AbstractPrivate &amp;dd)</span> : <span class="title">d_ptr</span><span class="params">(&amp;dd)</span> </span>&#123;&#125;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span> <span class="keyword">const</span> </span>= <span class="number">0</span>;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">modifyVar</span><span class="params">()</span> </span>= <span class="number">0</span>;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    QSharedDataPointer&lt;AbstractPrivate&gt; d_ptr;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    Q_DECLARE_PRIVATE(Abstract)</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DerivedPrivate</span> :</span> <span class="keyword">public</span> AbstractPrivate</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    DerivedPrivate() : AbstractPrivate(), bar(<span class="number">0</span>) &#123;&#125;</span><br><span class="line">    <span class="keyword">virtual</span> ~DerivedPrivate() = <span class="keyword">default</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> bar;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Derived</span> :</span> <span class="keyword">public</span> Abstract</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Derived() : Abstract(*(<span class="keyword">new</span> DerivedPrivate)) &#123;&#125;</span><br><span class="line">    Derived(<span class="keyword">const</span> Derived &amp;other) = <span class="keyword">default</span>;</span><br><span class="line">    ~Derived() = <span class="keyword">default</span>;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">Derived</span><span class="params">(AbstractPrivate &amp;dd)</span> : <span class="title">Abstract</span><span class="params">(dd)</span> </span>&#123;&#125;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span> <span class="keyword">const</span> <span class="keyword">override</span> </span>&#123; Q_D(<span class="keyword">const</span> Derived); <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;foo &quot;</span> &lt;&lt; d-&gt;var &lt;&lt; <span class="string">&quot; &quot;</span> &lt;&lt; d-&gt;bar &lt;&lt; <span class="built_in">endl</span>; &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">modifyVar</span><span class="params">()</span> <span class="keyword">override</span> </span>&#123; Q_D(Derived); d-&gt;var++; d-&gt;bar++; &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    Q_DECLARE_PRIVATE(Derived)</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>And testing the copy-on-write mechanism:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="function">QScopedPointer&lt;Derived&gt; <span class="title">ins</span><span class="params">(<span class="keyword">new</span> Derived())</span></span>;</span><br><span class="line">    <span class="function">QScopedPointer&lt;Derived&gt; <span class="title">ins2</span><span class="params">(<span class="keyword">new</span> Derived(*ins))</span></span>;</span><br><span class="line">    ins-&gt;foo();</span><br><span class="line">    ins-&gt;modifyVar();</span><br><span class="line">    ins-&gt;foo();</span><br><span class="line">    ins2-&gt;foo();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>But, eh, it’s a compile-time error.</p>
+<pre><code>error: reinterpret_cast from type &apos;const AbstractPrivate*&apos; to type &apos;AbstractPrivate*&apos; casts away qualifiers
+ Q_DECLARE_PRIVATE(Abstract)
+</code></pre><h3 id="Q-D-revisited"><a href="#Q-D-revisited" class="headerlink" title="Q_D, revisited"></a><code>Q_D</code>, revisited</h3><p>So, where does the <code>const</code> removal come from? In <code>qglobal.h</code>, the code related to <code>Q_D</code> is as follows:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="function"><span class="keyword">inline</span> T *<span class="title">qGetPtrHelper</span><span class="params">(T *ptr)</span> </span>&#123; <span class="keyword">return</span> ptr; &#125;</span><br><span class="line">template &lt;typename Ptr&gt; inline auto qGetPtrHelper(const Ptr &amp;ptr) -&gt; decltype(ptr.operator-&gt;()) &#123; return ptr.operator-&gt;(); &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// The body must be a statement:</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> Q_CAST_IGNORE_ALIGN(body) QT_WARNING_PUSH QT_WARNING_DISABLE_GCC(<span class="meta-string">&quot;-Wcast-align&quot;</span>) body QT_WARNING_POP</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> Q_DECLARE_PRIVATE(Class) \</span></span><br><span class="line">    inline Class##Private* d_func() \</span><br><span class="line">    &#123; Q_CAST_IGNORE_ALIGN(<span class="keyword">return</span> <span class="keyword">reinterpret_cast</span>&lt;Class##Private *&gt;(qGetPtrHelper(d_ptr));) &#125; \</span><br><span class="line">    inline const Class##Private* d_func() const \</span><br><span class="line">    &#123; Q_CAST_IGNORE_ALIGN(<span class="keyword">return</span> <span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">const</span> Class##Private *&gt;(qGetPtrHelper(d_ptr));) &#125; \</span><br><span class="line">    <span class="keyword">friend</span> <span class="class"><span class="keyword">class</span> <span class="title">Class</span>##<span class="title">Private</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> Q_D(Class) Class##Private * const d = d_func()</span></span><br></pre></td></tr></table></figure>
+<p>It turns out that <code>Q_D</code> will call <code>d_func()</code> which then calls an overload of <code>qGetPtrHelper()</code> 
+that takes <code>const Ptr &amp;ptr</code>. What does <code>ptr.operator-&gt;()</code> return? What is the difference between 
+<code>QScopedPointer</code> and <code>QSharedDataPointer</code> here?</p>
+<p><a target="_blank" rel="noopener" href="https://doc.qt.io/qt-5/qscopedpointer.html#operator--gt"><code>QScopedPointer</code></a>‘s <code>operator-&gt;()</code> is a 
+<code>const</code> method that returns a non-<code>const</code> pointer to <code>T</code>; however, 
+<a target="_blank" rel="noopener" href="https://doc.qt.io/qt-5/qshareddatapointer.html#operator--gt"><code>QSharedDataPointer</code></a> has two 
+<code>operator-&gt;()</code>s, one being <code>const T* operator-&gt;() const</code>, the other <code>T* operator-&gt;()</code>, and they
+have quite different behaviours – the non-<code>const</code> variant calls <code>detach()</code> (where copy-on-write 
+is implemented), but the other one does not.</p>
+<p><code>qGetPtrHelper()</code> here can only take <code>d_ptr</code> as a <code>const QSharedDataPointer</code>, not a non-<code>const</code> 
+one; so, no matter which <code>d_func()</code> we are calling, we can only get a <code>const AbstractPrivate *</code>. 
+That is just the problem here. </p>
+<p>To resolve this problem, let’s replace the <code>Q_D</code> macros with the ones we define ourselves:</p>
+<pre><code>#define CONST_SHARED_D(Class) const Class##Private *const d = reinterpret_cast&lt;const Class##Private *&gt;(d_ptr.constData())
+#define SHARED_D(Class) Class##Private *const d = reinterpret_cast&lt;Class##Private *&gt;(d_ptr.data())
+</code></pre><p>We will then use <code>SHARED_D(Class)</code> in place of <code>Q_D(Class)</code> and <code>CONST_SHARED_D(Class)</code> for 
+<code>Q_D(const Class)</code>. Since the <code>const</code> and non-<code>const</code> variant really behaves differently, 
+it should help to differentiate these two uses. Also, delete <code>Q_DECLARE_PRIVATE</code> since we 
+do not need them any more:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AbstractPrivate</span> :</span> <span class="keyword">public</span> QSharedData</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    AbstractPrivate() : var(<span class="number">0</span>) &#123;&#125;</span><br><span class="line">    <span class="keyword">virtual</span> ~AbstractPrivate() = <span class="keyword">default</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> var;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Abstract</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Abstract(<span class="keyword">const</span> Abstract &amp;other) = <span class="keyword">default</span>;</span><br><span class="line">    ~Abstract() = <span class="keyword">default</span>;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">Abstract</span><span class="params">(AbstractPrivate &amp;dd)</span> : <span class="title">d_ptr</span><span class="params">(&amp;dd)</span> </span>&#123;&#125;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span> <span class="keyword">const</span> </span>= <span class="number">0</span>;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">modifyVar</span><span class="params">()</span> </span>= <span class="number">0</span>;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    QSharedDataPointer&lt;AbstractPrivate&gt; d_ptr;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DerivedPrivate</span> :</span> <span class="keyword">public</span> AbstractPrivate</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    DerivedPrivate() : AbstractPrivate(), bar(<span class="number">0</span>) &#123;&#125;</span><br><span class="line">    <span class="keyword">virtual</span> ~DerivedPrivate() = <span class="keyword">default</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> bar;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Derived</span> :</span> <span class="keyword">public</span> Abstract</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Derived() : Abstract(*(<span class="keyword">new</span> DerivedPrivate)) &#123;&#125;</span><br><span class="line">    Derived(<span class="keyword">const</span> Derived &amp;other) = <span class="keyword">default</span>;</span><br><span class="line">    ~Derived() = <span class="keyword">default</span>;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">Derived</span><span class="params">(AbstractPrivate &amp;dd)</span> : <span class="title">Abstract</span><span class="params">(dd)</span> </span>&#123;&#125;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span> <span class="keyword">const</span> <span class="keyword">override</span> </span>&#123; CONST_SHARED_D(Derived); <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;foo &quot;</span> &lt;&lt; d-&gt;var &lt;&lt; <span class="string">&quot; &quot;</span> &lt;&lt; d-&gt;bar &lt;&lt; <span class="built_in">endl</span>; &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">modifyVar</span><span class="params">()</span> <span class="keyword">override</span> </span>&#123; SHARED_D(Derived); d-&gt;var++; d-&gt;bar++; &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>With the same <code>main()</code> code, what’s the result?</p>
+<pre><code>foo 0 0
+foo 1 16606417
+foo 0 0
+</code></pre><p>… big whoops, what is that random thing there? Well, if we use <code>dynamic_cast</code> in place of 
+<code>reinterpret_cast</code>, the program simply crashes after <code>ins-&gt;modifyVar();</code>, indicating that 
+<code>ins</code>‘s <code>d_ptr.data()</code> is not at all a <code>DerivedPrivate</code>.</p>
+<h3 id="virtual-clones"><a href="#virtual-clones" class="headerlink" title="virtual clones"></a>virtual clones</h3><p>The <code>detach()</code> method of <code>QSharedDataPointer</code> will by default create an instance of <code>AbstractPrivate</code> 
+regardless of what the instance really is. Fortunately, it is possible to change that behaviour 
+through <a target="_blank" rel="noopener" href="https://doc.qt.io/qt-5/qshareddatapointer.html#clone">specifying the <code>clone()</code> method</a>.</p>
+<p>First, we need to make a virtual function in <code>AbstractPrivate</code> class:</p>
+<pre><code>virtual AbstractPrivate *clone() const = 0;
+</code></pre><p>(make it pure virtual just to force all subclasses to re-implement it; if your base class is 
+not abstract you probably want to implement the <code>clone()</code> method) and then override it 
+in <code>DerivedPrivate</code>:</p>
+<pre><code>virtual DerivedPrivate *clone() const &#123; return new DerivedPrivate(*this); &#125;
+</code></pre><p>Then, specify the template method for <code>QSharedDataPointer::clone()</code>. As we will re-use it multiple
+times (for different base classes), it is better to define a macro:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> DATA_CLONE_VIRTUAL(Class) template<span class="meta-string">&lt;&gt;                      \</span></span></span><br><span class="line">    Class##Private *QSharedDataPointer&lt;Class##Private&gt;::clone()   \</span><br><span class="line">    &#123;                                                             \</span><br><span class="line">        <span class="keyword">return</span> d-&gt;clone();                                        \</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">// after the definition of Abstract</span></span><br><span class="line">DATA_CLONE_VIRTUAL(Abstract)</span><br></pre></td></tr></table></figure>
+<p>It is not necessary to write <code>DATA_CLONE_VIRTUAL(Derived)</code> as we are never storing a 
+<code>QSharedDataPointer&lt;DerivedPrivate&gt;</code> throughout the heirarchy.</p>
+<p>Then test the code again:</p>
+<pre><code>foo 0 0
+foo 1 1
+foo 0 0
+</code></pre><p>– Just as expected! It continues to work if we replace <code>Derived</code> with <code>Abstract</code> in <code>QScopedPointer</code>:</p>
+<pre><code>QScopedPointer&lt;Abstract&gt; ins(new Derived());
+QScopedPointer&lt;Abstract&gt; ins2(new Derived(* dynamic_cast&lt;const Derived *&gt;(ins.data())));
+</code></pre><p>Well, another problem comes, that the constructor for <code>ins2</code> seems too ugly, and messy. We could, like 
+the private classes, implement a virtual function <code>clone()</code> for these kinds of things, but it is 
+still not gentle enough, and we cannot use a default copy constructor for any class that contains 
+such <code>QScopedPointer</code>s.</p>
+<p>What about <code>QSharedPointer</code> that is copy-constructable? Well, then these copies actually point to 
+the same data structures and no copy-on-write is performed at all. This still not wanted. </p>
+<h2 id="the-Descendents-of-…"><a href="#the-Descendents-of-…" class="headerlink" title="the Descendents of …"></a>the <code>Descendent</code>s of …</h2><p>Inspired by <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=QGcVXgEVMJg">Sean Parent’s video</a>, 
+I finally come up with the following implementation:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Descendent</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">concept</span></span></span><br><span class="line"><span class="class">    &#123;</span></span><br><span class="line">        <span class="keyword">virtual</span> ~<span class="keyword">concept</span>() = <span class="keyword">default</span>;</span><br><span class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">const</span> T *<span class="title">ptr</span><span class="params">()</span> <span class="keyword">const</span> </span>= <span class="number">0</span>;</span><br><span class="line">        <span class="function"><span class="keyword">virtual</span> T *<span class="title">ptr</span><span class="params">()</span> </span>= <span class="number">0</span>;</span><br><span class="line">        <span class="function"><span class="keyword">virtual</span> <span class="built_in">unique_ptr</span>&lt;<span class="keyword">concept</span>&gt; <span class="title">clone</span><span class="params">()</span> <span class="keyword">const</span> </span>= <span class="number">0</span>;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> U&gt;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">model</span> :</span> <span class="keyword">public</span> <span class="keyword">concept</span></span><br><span class="line">    &#123;</span><br><span class="line">        model(U x) : instance(move(x)) &#123;&#125;</span><br><span class="line">        <span class="function"><span class="keyword">const</span> T *<span class="title">ptr</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> &amp;instance; &#125;</span><br><span class="line">        <span class="function">T *<span class="title">ptr</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> &amp;instance; &#125;</span><br><span class="line">        <span class="comment">// or unique_ptr&lt;model&lt;U&gt; &gt;(new model&lt;U&gt;(U(instance))) if you do not have C++14</span></span><br><span class="line">        <span class="function"><span class="built_in">unique_ptr</span>&lt;<span class="keyword">concept</span>&gt; <span class="title">clone</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> make_unique&lt;model&lt;U&gt; &gt;(U(instance)); &#125;</span><br><span class="line">        U instance;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">unique_ptr</span>&lt;<span class="keyword">concept</span>&gt; m_d;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> U&gt;</span><br><span class="line">    Descendent(U x) : m_d(make_unique&lt;model&lt;U&gt; &gt;(move(x))) &#123;&#125;</span><br><span class="line"></span><br><span class="line">    Descendent(<span class="keyword">const</span> Descendent &amp; that) : m_d(move(that.m_d-&gt;clone())) &#123;&#125;</span><br><span class="line">    Descendent(Descendent &amp;&amp; that) : m_d(move(that.m_d)) &#123;&#125;</span><br><span class="line"></span><br><span class="line">    Descendent &amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> Descendent &amp;that) &#123; Descendent t(that); *<span class="keyword">this</span> = move(t); <span class="keyword">return</span> *<span class="keyword">this</span>; &#125;</span><br><span class="line">    Descendent &amp; <span class="keyword">operator</span>=(Descendent &amp;&amp; that) &#123; m_d = move(that.m_d); <span class="keyword">return</span> *<span class="keyword">this</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">const</span> T *<span class="title">data</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> m_d-&gt;ptr(); &#125;</span><br><span class="line">    <span class="function"><span class="keyword">const</span> T *<span class="title">constData</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> m_d-&gt;ptr(); &#125;</span><br><span class="line">    <span class="function">T *<span class="title">data</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> m_d-&gt;ptr(); &#125;</span><br><span class="line">    <span class="keyword">const</span> T *<span class="keyword">operator</span>-&gt;() <span class="keyword">const</span> &#123; <span class="keyword">return</span> m_d-&gt;ptr(); &#125;</span><br><span class="line">    T *<span class="keyword">operator</span>-&gt;() &#123; <span class="keyword">return</span> m_d-&gt;ptr(); &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>This class allows you to use <code>Descendent&lt;T&gt;</code> (read as “descendent of <code>T</code>“) to represent any instance 
+of any subclass of <code>T</code>. It is copy-constructable, move-constructable, copy-assignable, and move-assignable. </p>
+<p>Test code:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Descendent&lt;Abstract&gt; ins = Derived();</span><br><span class="line">    Descendent&lt;Abstract&gt; ins2 = ins;</span><br><span class="line">    ins-&gt;foo();</span><br><span class="line">    ins-&gt;modifyVar();</span><br><span class="line">    ins-&gt;foo();</span><br><span class="line">    ins2-&gt;foo();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>It gives just the same results as before, but much neater and nicer – How does it work?</p>
+<p>First we define a class <code>concept</code>. We put here what we want our instance to satisfy. We would like to 
+access it as <code>const</code> and non-<code>const</code>, and to clone it as-is. Then we define a template class <code>model&lt;U&gt;</code> 
+where <code>U</code> is a subclass of <code>T</code>, and implement these functionalities.</p>
+<p>Next, we store a <code>unique_ptr&lt;concept&gt;</code>. The reason for not using <code>QScopedPointer</code> is <code>QScopedPointer</code> is not 
+movable, but movability is a feature we actually will want (in sink arguments and return values).</p>
+<p>Finally it’s just the constructor, moving and copying operations, and ways to access the wrapped object.</p>
+<p>When <code>Descendent&lt;Abstract&gt; ins2 = ins;</code> is called, we will go through the copy constructor of <code>Descendent</code>:</p>
+<pre><code>Descendent(const Descendent &amp; that) : m_d(move(that.m_d-&gt;clone())) &#123;&#125;
+</code></pre><p>which will then call <code>ins.m_d-&gt;clone()</code>. But remember that <code>ins.m_d</code> actually contains a pointer to 
+<code>model&lt;Derived&gt;</code>, whose <code>clone()</code> is <code>return make_unique&lt;model&lt;Derived&gt; &gt;(Derived(instance));</code>. This expression 
+will call the copy constructor of <code>Derived</code>, then make a <code>unique_ptr&lt;model&lt;Derived&gt; &gt;</code>, which calls the 
+constructor of <code>model&lt;Derived&gt;</code>:</p>
+<pre><code>model(Derived x) : instance(move(x)) &#123;&#125;
+</code></pre><p>which move-constructs <code>instance</code>. Finally the <code>unique_ptr&lt;model&lt;Derived&gt; &gt;</code> is implicitly converted to 
+<code>unique_ptr&lt;concept&gt;</code>, as per the <a target="_blank" rel="noopener" href="https://en.cppreference.com/w/cpp/memory/unique_ptr">conversion rule</a>. 
+“If <code>T</code> is a derived class of some base <code>B</code>, then <code>std::unique_ptr&lt;T&gt;</code> is implicitly convertible to 
+<code>std::unique_ptr&lt;B&gt;</code>.”</p>
+<p>And from now on, happy hacking — (.&gt;w&lt;.)</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>tusooa
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="http://tusooa.github.io/2019/05/18/Polymorphism-and-Implicit-Sharing/" title="Polymorphism and Implicit Sharing">http://tusooa.github.io/2019/05/18/Polymorphism-and-Implicit-Sharing/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/kde/" rel="tag"># kde</a>
+              <a href="/tags/krita/" rel="tag"># krita</a>
+              <a href="/tags/c/" rel="tag"># c++</a>
+              <a href="/tags/tech/" rel="tag"># tech</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/05/13/GSoC-2019/" rel="prev" title="GSoC 2019">
+                  <i class="fa fa-chevron-left"></i> GSoC 2019
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/05/30/Assistants-copy-share-assignment/" rel="next" title="Assistants -- copy, share, assignment">
+                  Assistants -- copy, share, assignment <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+  
+  
+  
+
+
+
+      
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      
+
+      
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">tusooa</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://thistusooa.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://tusooa.github.io/2019/05/18/Polymorphism-and-Implicit-Sharing/";
+    this.page.identifier = "2019/05/18/Polymorphism-and-Implicit-Sharing/";
+    this.page.title = "Polymorphism and Implicit Sharing";
+    };
+  NexT.utils.loadComments('#disqus_thread', () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://thistusooa.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

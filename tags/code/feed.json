@@ -1,0 +1,21 @@
+{
+    "version": "https://jsonfeed.org/version/1",
+    "title": "何事西风不待人 • All posts by \"code\" tag",
+    "description": "A poet, painter, and programmer.",
+    "home_page_url": "http://tusooa.github.io",
+    "items": [
+        {
+            "id": "http://tusooa.github.io/2019/05/30/Assistants-copy-share-assignment/",
+            "url": "http://tusooa.github.io/2019/05/30/Assistants-copy-share-assignment/",
+            "title": "Assistants -- copy, share, assignment",
+            "date_published": "2019-05-30T18:20:53.000Z",
+            "content_html": "<p>Over the last week I have been investigating into <a href=\"https://bugs.kde.org/show_bug.cgi?id=361012\">Bug 361012</a>, \non the undo history of the modification of guides. But from the very beginning I mixed up the two terms \n“guides” and “assistants,” so I decided to <a href=\"https://invent.kde.org/kde/krita/merge_requests/32\">work on both</a>. \nThe work with guides is a lot simpler and will not be covered here, though. </p>\n<p>As I write this post, the <a href=\"https://invent.kde.org/kde/krita/tree/master\">master branch of Krita</a> \ndoes not create any undo commands for the document. I first <a href=\"https://invent.kde.org/kde/krita/merge_requests/32/diffs?commit_id=12bc1d0730f04321c5ec304ce09f6670ef14c576\">added undo commands</a> for adding and removing \nassistants, which seems the easiest. The editing of them is a bit more difficult, as the dragging \noperations involve the movement of many “handles,” the movable round buttons that define the position \nof one or more assistants. The source code on master for implementing such actions is quite complicated \nand involves a great number of cases. It would be another great endeavour to put all these bunches of \ncode into a <code>KUndo2Command</code>. But, another thing I have experimented with and I will be working on \nwill immediately clear the clouds.</p>\n<p>So I just thought of the copy-on-write mechanism, and yes, why not? Though COW itself is not \nactually implemented for the guides, it does seem inspiring. I mean, we can just save a copy \nof all assistants and, when needed, restore that. </p>\n<p>The main problem here is the handles. They are represented as shared pointers in individual \nassistants and may be shared between different ones (e.g. two perspectives share two corner \nhandles and one side handles). When we take a clone of the list of assistants it will be \nnecessary to keep this kind of relationship. My solution is to use a <code>QMap</code> of pointers, \nwhich seems to coincide with the logic of exporting to xml, but I had yet to read that part\nof the code when writing mine so I did not know about that. The logic is to check, for \nevery handle, whether there is a mapping relationship in the map. If there is, we reuse that \nhandle, and if not, we create a new one with the same position and record that relationship \nin our <code>QMap</code>.</p>\n<p>But some display properties are not to be recorded into the undo history. Such properties \ninclude the changing of color, visibility, etc. To resolve this problem, I put these data into \na shared pointer and, when we are cloning an assistant for undo/redo, we will reuse that pointer.\nWhen we replace the assistant list with the one recorded, all the display properties will remain \nsince the data are shared. </p>\n<p>And for the next several weeks I will move onto the <a href=\"https://phabricator.kde.org/T10991\">Snapshot Docker</a>.</p>\n",
+            "tags": [
+                "kde",
+                "krita",
+                "c++",
+                "code"
+            ]
+        }
+    ]
+}

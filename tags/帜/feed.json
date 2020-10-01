@@ -1,0 +1,19 @@
+{
+    "version": "https://jsonfeed.org/version/1",
+    "title": "何事西风不待人 • All posts by \"帜\" tag",
+    "description": "A poet, painter, and programmer.",
+    "home_page_url": "http://tusooa.github.io",
+    "items": [
+        {
+            "id": "http://tusooa.github.io/2018/01/25/dig-a-hole/",
+            "url": "http://tusooa.github.io/2018/01/25/dig-a-hole/",
+            "title": "开个坑。。。。",
+            "date_published": "2018-01-26T02:08:32.000Z",
+            "content_html": "<p>嗯大约就是这样0 0。</p>\n",
+            "tags": [
+                "帜",
+                "坑"
+            ]
+        }
+    ]
+}

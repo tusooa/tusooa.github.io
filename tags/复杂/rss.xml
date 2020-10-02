@@ -11,17 +11,19 @@
         <category>krita</category>
         <category>c++</category>
         <category>code</category>
+        <category>firefox</category>
+        <category>无奈</category>
+        <category>坑</category>
+        <category>javascript</category>
         <category>tech</category>
         <category>帜</category>
-        <category>坑</category>
-        <category>无奈</category>
         <category>复杂</category>
         <item>
             <guid isPermalink="true">http://tusooa.github.io/2018/04/29/short-code/</guid>
             <title>短代码(一个马后炮)</title>
             <link>http://tusooa.github.io/2018/04/29/short-code/</link>
-            <category>坑</category>
             <category>无奈</category>
+            <category>坑</category>
             <category>复杂</category>
             <pubDate>Sun, 29 Apr 2018 06:58:57 -0400</pubDate>
             <description><![CDATA[ &lt;p&gt;没赶上报名截止日期，一直 &lt;code&gt;not invited&lt;/code&gt;。就很难过。&lt;/p&gt;

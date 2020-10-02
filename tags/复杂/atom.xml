@@ -8,10 +8,12 @@
     <category term="krita" />
     <category term="c++" />
     <category term="code" />
+    <category term="firefox" />
+    <category term="无奈" />
+    <category term="坑" />
+    <category term="javascript" />
     <category term="tech" />
     <category term="帜" />
-    <category term="坑" />
-    <category term="无奈" />
     <category term="复杂" />
     <entry>
         <id>http://tusooa.github.io/2018/04/29/short-code/</id>
@@ -42,8 +44,8 @@
 &lt;p&gt;排名表上最短是345。&lt;/p&gt;
 &lt;p&gt;但是有什么用呢。我又不能提交(以后一定要提前关注一下)。&lt;/p&gt;
 </content>
-        <category term="坑" />
         <category term="无奈" />
+        <category term="坑" />
         <category term="复杂" />
         <updated>2018-04-29T10:58:57.000Z</updated>
     </entry>

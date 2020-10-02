@@ -3,16 +3,129 @@
     <id>http://tusooa.github.io</id>
     <title>何事西风不待人 • Posts by &#34;无奈&#34; tag</title>
     <link href="http://tusooa.github.io" />
-    <updated>2018-04-29T10:58:57.000Z</updated>
+    <updated>2020-10-02T00:15:56.000Z</updated>
     <category term="kde" />
     <category term="krita" />
     <category term="c++" />
     <category term="code" />
+    <category term="firefox" />
+    <category term="无奈" />
+    <category term="坑" />
+    <category term="javascript" />
     <category term="tech" />
     <category term="帜" />
-    <category term="坑" />
-    <category term="无奈" />
     <category term="复杂" />
+    <entry>
+        <id>http://tusooa.github.io/2020/10/01/Fix-firefox-address-bar-clickSelectsAll-bug/</id>
+        <title>Fix firefox address bar clickSelectsAll bug (Spoiler: no re-compilation required.)</title>
+        <link rel="alternate" href="http://tusooa.github.io/2020/10/01/Fix-firefox-address-bar-clickSelectsAll-bug/"/>
+        <content type="html">&lt;p&gt;A couple of months ago, I opened my Firefox as usual, I found out that
+when I click on the address bar, it dared to select everything in it
+as if any creepy browser would do! The first thing I did is to check
+the &lt;code&gt;clickSelectsAll&lt;/code&gt; pref – what I always do first after getting a
+new install of Firefox on Windows is setting this pref to &lt;code&gt;false&lt;/code&gt;,
+and setting &lt;code&gt;doubleClickSelectsAll&lt;/code&gt; pref to &lt;code&gt;true&lt;/code&gt;: that is the default
+behaviour for Firefox on GNU/Linux… that time at least…&lt;/p&gt;
+&lt;p&gt;Much to my disappointment, the pref are setting correctly, but nothing
+works. I tried to search for this, but without success, maybe since
+this bug was so new, or I was to silly to apply the right keywords
+(huh, maybe the latter one?). So I created an account on Mozilla’s
+bugtracker just to open &lt;a href=&#34;https://bugzilla.mozilla.org/show_bug.cgi?id=1629135&#34;&gt;a bug&lt;/a&gt;. At the same time I switched
+back to the ESR version of Firefox, which rid me (till recently) of
+this stupid address bar but still granted me security updates. A
+few days ago, however, Firefox ESR was unfortunately eventually shipped
+with this bug, calling for a solution.&lt;/p&gt;
+&lt;a id=&#34;more&#34;&gt;&lt;/a&gt;
+&lt;h1 id=&#34;Some-more-background&#34;&gt;&lt;a href=&#34;#Some-more-background&#34; class=&#34;headerlink&#34; title=&#34;Some more background&#34;&gt;&lt;/a&gt;Some more background&lt;/h1&gt;&lt;p&gt;Here I will add more background because I need to complain a lot (&amp;gt;w&amp;lt;).
+If you would like to see the solution directly, &lt;a href=&#34;#The-solution&#34;&gt;jump there&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Someone on bugzilla pointed out that the bug had been
+&lt;a href=&#34;https://bugzilla.mozilla.org/show_bug.cgi?id=1621570&#34;&gt;raised by someone else&lt;/a&gt;. Following that bug, I saw that
+the developer was being pretty toxic and just marked it as &lt;code&gt;WONTFIX&lt;/code&gt;,
+despite many people criticized the buggy behaviour and regarded
+the original behaviour as signature of Firefox. I finally switched
+from Ubuntu to Gentoo after the new ESR, as I would like to have more
+control of my software.&lt;/p&gt;
+&lt;p&gt;Yesterday I &lt;a href=&#34;https://matrix.to/#/!NREUQXSZzhWoQFQpTe:matrix.org/$16014845914171808dKKcm:matrix.org?via=matrix.org&amp;amp;via=tusooa.xyz&#34;&gt;talked&lt;/a&gt; to &lt;a href=&#34;https://outsideofinfinity.wordpress.com/&#34;&gt;tiar&lt;/a&gt; about the freedom
+of users to make software behave the way they want, without necessarily
+being a developer. I complained that many free/libre software does not
+excel in this aspect, using Firefox &gt;=75 as an example.&lt;/p&gt;
+&lt;p&gt;The thing Firefox developers does, by removing the &lt;code&gt;clickSelectsAll&lt;/code&gt;
+prefs, is actually somewhat limiting users’ freedom, as customization
+becomes harder and harder. This kind of freedom has been brought up
+by a KDE person as &lt;a href=&#34;https://phabricator.kde.org/T11091&#34;&gt;a goal&lt;/a&gt; called “freedom out of the box.”
+In short, it aims to make changing the behaviour of a program
+as easy as just using it, probably unifying the interface where a program
+is used and where a program is customized.&lt;/p&gt;
+&lt;p&gt;And that is reasonable: no one should have to spend quite a long time
+reading an extraordinarily large code base just to make a tiny little
+change that would significantly improve their lives. We will simply not
+have that much time. I know tweaking system is fun… (should I say
+addictive?) but still, instant result is always a good-to-have.&lt;/p&gt;
+&lt;h1 id=&#34;The-solution&#34;&gt;&lt;a href=&#34;#The-solution&#34; class=&#34;headerlink&#34; title=&#34;The solution&#34;&gt;&lt;/a&gt;The solution&lt;/h1&gt;&lt;p&gt;For Firefox, we do have a &lt;a href=&#34;https://superuser.com/questions/540851/go-back-to-not-selecting-the-whole-url-when-i-click-the-address-bar&#34;&gt;solution&lt;/a&gt; without needing to
+recompile. That is, to change the &lt;code&gt;omni.ja&lt;/code&gt; pack in the Firefox
+distribution. Based on that I managed to restore the old good
+urlbar behaviour.&lt;/p&gt;
+&lt;p&gt;For my &lt;code&gt;firefox-bin&lt;/code&gt; on Gentoo, the relevant file is at
+&lt;code&gt;/opt/firefox/browser/omni.ja&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;First make a copy of that file:&lt;/p&gt;
+&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;cp -v /opt/firefox/browser/omni.ja omni.ja.orig&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;Then unzip the file:&lt;/p&gt;
+&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;mkdir omni &amp;amp;&amp;amp; unzip -d omni /opt/firefox/browser/omni.ja&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;It may return 2, but does not matter.&lt;/p&gt;
+&lt;p&gt;Then edit the &lt;code&gt;modules/UrlbarInput.jsm&lt;/code&gt;:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;Change&lt;/p&gt;
+&lt;figure class=&#34;highlight javascript&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;built_in&#34;&gt;this&lt;/span&gt;._preventClickSelectsAll = &lt;span class=&#34;built_in&#34;&gt;this&lt;/span&gt;.focused;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;to&lt;/p&gt;
+&lt;figure class=&#34;highlight javascript&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;built_in&#34;&gt;this&lt;/span&gt;._preventClickSelectsAll = &lt;span class=&#34;literal&#34;&gt;true&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;to get the &lt;code&gt;clickSelectsAll&lt;/code&gt; behaviour.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Change&lt;/p&gt;
+&lt;figure class=&#34;highlight javascript&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;keyword&#34;&gt;if&lt;/span&gt; (event.target.id == SEARCH_BUTTON_ID) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;to&lt;/p&gt;
+&lt;figure class=&#34;highlight javascript&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;keyword&#34;&gt;if&lt;/span&gt; (event.detail == &lt;span class=&#34;number&#34;&gt;2&lt;/span&gt;) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;  &lt;span class=&#34;built_in&#34;&gt;this&lt;/span&gt;.select();&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;  event.preventDefault();&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;&amp;#125; &lt;span class=&#34;keyword&#34;&gt;else&lt;/span&gt; &lt;span class=&#34;keyword&#34;&gt;if&lt;/span&gt; (event.target.id == SEARCH_BUTTON_ID) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;to get the &lt;code&gt;doubleClickSelectsAll&lt;/code&gt; behaviour.&lt;/p&gt;
+&lt;p&gt;Note that this will &lt;em&gt;not&lt;/em&gt; put the url into primary selection
+upon double click. This can be useful sometimes, if you just
+would like to replace the current url with the one currently
+in primary selection.
+If you would like to put the url into primary selection
+upon double click, which completely restores the original
+behaviour, change it to&lt;/p&gt;
+&lt;figure class=&#34;highlight javascript&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;keyword&#34;&gt;if&lt;/span&gt; (event.detail == &lt;span class=&#34;number&#34;&gt;2&lt;/span&gt;) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;  &lt;span class=&#34;built_in&#34;&gt;this&lt;/span&gt;.inputField.select();&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;  event.preventDefault();&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;&amp;#125; &lt;span class=&#34;keyword&#34;&gt;else&lt;/span&gt; &lt;span class=&#34;keyword&#34;&gt;if&lt;/span&gt; (event.target.id == SEARCH_BUTTON_ID) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;instead.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;I have also made a patch:
+&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;14&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;] diff -r omni-old omni&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;diff -r omni-old/modules/UrlbarInput.jsm omni/modules/UrlbarInput.jsm&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2228c2228&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;&amp;lt;         this._preventClickSelectsAll = this.focused;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;---&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;&amp;gt;         this._preventClickSelectsAll = &lt;span class=&#34;literal&#34;&gt;true&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2245c2245,2249&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;&amp;lt;         &lt;span class=&#34;keyword&#34;&gt;if&lt;/span&gt; (event.target.id == SEARCH_BUTTON_ID) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;---&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;&amp;gt;         // doubleClickSelectsAll&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;&amp;gt;         &lt;span class=&#34;keyword&#34;&gt;if&lt;/span&gt; (event.detail == 2) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;&amp;gt;           this.select();&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;&amp;gt;           event.preventDefault();&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;&amp;gt;         &amp;#125; &lt;span class=&#34;keyword&#34;&gt;else&lt;/span&gt; &lt;span class=&#34;keyword&#34;&gt;if&lt;/span&gt; (event.target.id == SEARCH_BUTTON_ID) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;There is also the search bar to change. The original Superuser answer
+suggests this, but as I do not use the search bar, I have not
+tried it out, nor do I know what the original behaviour of it was.
+&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;sed -i &lt;span class=&#34;string&#34;&gt;&amp;#x27;s/this\._preventClickSelectsAll = this\._textbox\.focused;/this._preventClickSelectsAll = true;/&amp;#x27;&lt;/span&gt;  omni/chrome/browser/content/browser/search/searchbar.js&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;After editing, we need to re-pack the files:
+&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;built_in&#34;&gt;cd&lt;/span&gt; omni &amp;amp;&amp;amp; zip -0DXqr ../omni.ja * &amp;amp;&amp;amp; &lt;span class=&#34;built_in&#34;&gt;cd&lt;/span&gt; -&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;And replace the original one:
+&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;cp -v omni.ja /opt/firefox/browser/omni.ja&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;You may need to change the ownership of the newly-created archive:
+&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;chown [U]:[G] /opt/firefox/browser/omni.ja&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+where &lt;code&gt;[U]&lt;/code&gt; and &lt;code&gt;[G]&lt;/code&gt; refers to the owner and group of the original
+file (we made a backup at &lt;code&gt;omni.ja.orig&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;To ensure everything takes effect, make a file called &lt;code&gt;.purgecaches&lt;/code&gt;
+to make Firefox aware of the changes:
+&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;touch /opt/firefox/browser/.purgecaches&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;Okay, from now on, we shall no longer suffer from the &lt;code&gt;clickSelectsAll&lt;/code&gt;
+bug.&lt;/p&gt;
+&lt;p&gt;Also, you may want to have additional configurations, such as
+&lt;a href=&#34;https://www.userchrome.org/megabar-styling-firefox-address-bar.html&#34;&gt;disabling the pop-up list upon clicking address bar&lt;/a&gt;
+or &lt;a href=&#34;https://github.com/WesleyBranton/Remove-Firefox-Megabar/blob/master/remove_megabar.css&#34;&gt;gettind rid of the address bar expanding effect&lt;/a&gt;
+when clicked upon.&lt;/p&gt;
+</content>
+        <category term="firefox" />
+        <category term="无奈" />
+        <category term="坑" />
+        <category term="javascript" />
+        <updated>2020-10-02T00:15:56.000Z</updated>
+    </entry>
     <entry>
         <id>http://tusooa.github.io/2018/04/29/short-code/</id>
         <title>短代码(一个马后炮)</title>
@@ -42,8 +155,8 @@
 &lt;p&gt;排名表上最短是345。&lt;/p&gt;
 &lt;p&gt;但是有什么用呢。我又不能提交(以后一定要提前关注一下)。&lt;/p&gt;
 </content>
-        <category term="坑" />
         <category term="无奈" />
+        <category term="坑" />
         <category term="复杂" />
         <updated>2018-04-29T10:58:57.000Z</updated>
     </entry>

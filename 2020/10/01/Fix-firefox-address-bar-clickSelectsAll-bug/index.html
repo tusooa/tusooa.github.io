@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"tusooa.github.io","root":"/","scheme":"Mist","version":"8.0.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
+  </script>
+
+  <meta name="description" content="A couple of months ago, I opened my Firefox as usual, I found out that when I click on the address bar, it dared to select everything in it as if any creepy browser would do! The first thing I did is">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Fix firefox address bar clickSelectsAll bug (Spoiler: no re-compilation required.)">
+<meta property="og:url" content="http://tusooa.github.io/2020/10/01/Fix-firefox-address-bar-clickSelectsAll-bug/index.html">
+<meta property="og:site_name" content="何事西风不待人">
+<meta property="og:description" content="A couple of months ago, I opened my Firefox as usual, I found out that when I click on the address bar, it dared to select everything in it as if any creepy browser would do! The first thing I did is">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-10-02T00:15:56.000Z">
+<meta property="article:modified_time" content="2020-10-02T02:14:01.138Z">
+<meta property="article:author" content="tusooa">
+<meta property="article:tag" content="firefox">
+<meta property="article:tag" content="无奈">
+<meta property="article:tag" content="坑">
+<meta property="article:tag" content="javascript">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://tusooa.github.io/2020/10/01/Fix-firefox-address-bar-clickSelectsAll-bug/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Fix firefox address bar clickSelectsAll bug (Spoiler: no re-compilation required.) | 何事西风不待人</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">何事西风不待人</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Some-more-background"><span class="nav-number">1.</span> <span class="nav-text">Some more background</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#The-solution"><span class="nav-number">2.</span> <span class="nav-text">The solution</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="tusooa"
+      src="https://secure.gravatar.com/avatar/7a3e6041334f3007176efc960fb6ba45?size=400">
+  <p class="site-author-name" itemprop="name">tusooa</p>
+  <div class="site-description" itemprop="description">A poet, painter, and programmer.</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://matrix.to/#/@tusooa:tusooa.xyz" title="Matrix → https:&#x2F;&#x2F;matrix.to&#x2F;#&#x2F;@tusooa:tusooa.xyz" rel="noopener" target="_blank"><i class="fa fa-hashtag fa-fw"></i>Matrix</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitlab.com/tusooa" title="GitLab → https:&#x2F;&#x2F;gitlab.com&#x2F;tusooa" rel="noopener" target="_blank"><i class="fab fa-gitlab fa-fw"></i>GitLab</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://invent.kde.org/tusooaw" title="KDE Invent → https:&#x2F;&#x2F;invent.kde.org&#x2F;tusooaw" rel="noopener" target="_blank"><i class="fab fa-gitlab fa-fw"></i>KDE Invent</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="Feed → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>Feed</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://en.wikipedia.org/wiki/Ejective_consonant" title="Ejective → https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Ejective_consonant" rel="noopener" target="_blank"><i class="fa fa-eject fa-fw"></i>Ejective</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+      
+
+      
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://tusooa.github.io/2020/10/01/Fix-firefox-address-bar-clickSelectsAll-bug/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://secure.gravatar.com/avatar/7a3e6041334f3007176efc960fb6ba45?size=400">
+      <meta itemprop="name" content="tusooa">
+      <meta itemprop="description" content="A poet, painter, and programmer.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="何事西风不待人">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Fix firefox address bar clickSelectsAll bug (Spoiler: no re-compilation required.)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-10-01 20:15:56" itemprop="dateCreated datePublished" datetime="2020-10-01T20:15:56-04:00">2020-10-01</time>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2020/10/01/Fix-firefox-address-bar-clickSelectsAll-bug/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/10/01/Fix-firefox-address-bar-clickSelectsAll-bug/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+    <!-- Use tags to replace categories -->
+    <span class="post-meta-item">
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/tags/firefox/" itemprop="url" rel="index"><span itemprop="name">firefox</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/tags/%E6%97%A0%E5%A5%88/" itemprop="url" rel="index"><span itemprop="name">无奈</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/tags/%E5%9D%91/" itemprop="url" rel="index"><span itemprop="name">坑</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/tags/javascript/" itemprop="url" rel="index"><span itemprop="name">javascript</span></a>
+        </span>
+    </span>
+
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>A couple of months ago, I opened my Firefox as usual, I found out that
+when I click on the address bar, it dared to select everything in it
+as if any creepy browser would do! The first thing I did is to check
+the <code>clickSelectsAll</code> pref – what I always do first after getting a
+new install of Firefox on Windows is setting this pref to <code>false</code>,
+and setting <code>doubleClickSelectsAll</code> pref to <code>true</code>: that is the default
+behaviour for Firefox on GNU/Linux… that time at least…</p>
+<p>Much to my disappointment, the pref are setting correctly, but nothing
+works. I tried to search for this, but without success, maybe since
+this bug was so new, or I was to silly to apply the right keywords
+(huh, maybe the latter one?). So I created an account on Mozilla’s
+bugtracker just to open <a target="_blank" rel="noopener" href="https://bugzilla.mozilla.org/show_bug.cgi?id=1629135">a bug</a>. At the same time I switched
+back to the ESR version of Firefox, which rid me (till recently) of
+this stupid address bar but still granted me security updates. A
+few days ago, however, Firefox ESR was unfortunately eventually shipped
+with this bug, calling for a solution.</p>
+<a id="more"></a>
+<h1 id="Some-more-background"><a href="#Some-more-background" class="headerlink" title="Some more background"></a>Some more background</h1><p>Here I will add more background because I need to complain a lot (&gt;w&lt;).
+If you would like to see the solution directly, <a href="#The-solution">jump there</a>.</p>
+<p>Someone on bugzilla pointed out that the bug had been
+<a target="_blank" rel="noopener" href="https://bugzilla.mozilla.org/show_bug.cgi?id=1621570">raised by someone else</a>. Following that bug, I saw that
+the developer was being pretty toxic and just marked it as <code>WONTFIX</code>,
+despite many people criticized the buggy behaviour and regarded
+the original behaviour as signature of Firefox. I finally switched
+from Ubuntu to Gentoo after the new ESR, as I would like to have more
+control of my software.</p>
+<p>Yesterday I <a target="_blank" rel="noopener" href="https://matrix.to/#/!NREUQXSZzhWoQFQpTe:matrix.org/$16014845914171808dKKcm:matrix.org?via=matrix.org&amp;via=tusooa.xyz">talked</a> to <a target="_blank" rel="noopener" href="https://outsideofinfinity.wordpress.com/">tiar</a> about the freedom
+of users to make software behave the way they want, without necessarily
+being a developer. I complained that many free/libre software does not
+excel in this aspect, using Firefox >=75 as an example.</p>
+<p>The thing Firefox developers does, by removing the <code>clickSelectsAll</code>
+prefs, is actually somewhat limiting users’ freedom, as customization
+becomes harder and harder. This kind of freedom has been brought up
+by a KDE person as <a target="_blank" rel="noopener" href="https://phabricator.kde.org/T11091">a goal</a> called “freedom out of the box.”
+In short, it aims to make changing the behaviour of a program
+as easy as just using it, probably unifying the interface where a program
+is used and where a program is customized.</p>
+<p>And that is reasonable: no one should have to spend quite a long time
+reading an extraordinarily large code base just to make a tiny little
+change that would significantly improve their lives. We will simply not
+have that much time. I know tweaking system is fun… (should I say
+addictive?) but still, instant result is always a good-to-have.</p>
+<h1 id="The-solution"><a href="#The-solution" class="headerlink" title="The solution"></a>The solution</h1><p>For Firefox, we do have a <a target="_blank" rel="noopener" href="https://superuser.com/questions/540851/go-back-to-not-selecting-the-whole-url-when-i-click-the-address-bar">solution</a> without needing to
+recompile. That is, to change the <code>omni.ja</code> pack in the Firefox
+distribution. Based on that I managed to restore the old good
+urlbar behaviour.</p>
+<p>For my <code>firefox-bin</code> on Gentoo, the relevant file is at
+<code>/opt/firefox/browser/omni.ja</code>.</p>
+<p>First make a copy of that file:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp -v /opt/firefox/browser/omni.ja omni.ja.orig</span><br></pre></td></tr></table></figure>
+<p>Then unzip the file:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir omni &amp;&amp; unzip -d omni /opt/firefox/browser/omni.ja</span><br></pre></td></tr></table></figure>
+<p>It may return 2, but does not matter.</p>
+<p>Then edit the <code>modules/UrlbarInput.jsm</code>:</p>
+<ol>
+<li><p>Change</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">this</span>._preventClickSelectsAll = <span class="built_in">this</span>.focused;</span><br></pre></td></tr></table></figure>
+<p>to</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">this</span>._preventClickSelectsAll = <span class="literal">true</span>;</span><br></pre></td></tr></table></figure>
+<p>to get the <code>clickSelectsAll</code> behaviour.</p>
+</li>
+<li><p>Change</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (event.target.id == SEARCH_BUTTON_ID) &#123;</span><br></pre></td></tr></table></figure>
+<p>to</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (event.detail == <span class="number">2</span>) &#123;</span><br><span class="line">  <span class="built_in">this</span>.select();</span><br><span class="line">  event.preventDefault();</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (event.target.id == SEARCH_BUTTON_ID) &#123;</span><br></pre></td></tr></table></figure>
+<p>to get the <code>doubleClickSelectsAll</code> behaviour.</p>
+<p>Note that this will <em>not</em> put the url into primary selection
+upon double click. This can be useful sometimes, if you just
+would like to replace the current url with the one currently
+in primary selection.
+If you would like to put the url into primary selection
+upon double click, which completely restores the original
+behaviour, change it to</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (event.detail == <span class="number">2</span>) &#123;</span><br><span class="line">  <span class="built_in">this</span>.inputField.select();</span><br><span class="line">  event.preventDefault();</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (event.target.id == SEARCH_BUTTON_ID) &#123;</span><br></pre></td></tr></table></figure>
+<p>instead.</p>
+</li>
+</ol>
+<p>I have also made a patch:
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">] diff -r omni-old omni</span><br><span class="line">diff -r omni-old/modules/UrlbarInput.jsm omni/modules/UrlbarInput.jsm</span><br><span class="line">2228c2228</span><br><span class="line">&lt;         this._preventClickSelectsAll = this.focused;</span><br><span class="line">---</span><br><span class="line">&gt;         this._preventClickSelectsAll = <span class="literal">true</span>;</span><br><span class="line">2245c2245,2249</span><br><span class="line">&lt;         <span class="keyword">if</span> (event.target.id == SEARCH_BUTTON_ID) &#123;</span><br><span class="line">---</span><br><span class="line">&gt;         // doubleClickSelectsAll</span><br><span class="line">&gt;         <span class="keyword">if</span> (event.detail == 2) &#123;</span><br><span class="line">&gt;           this.select();</span><br><span class="line">&gt;           event.preventDefault();</span><br><span class="line">&gt;         &#125; <span class="keyword">else</span> <span class="keyword">if</span> (event.target.id == SEARCH_BUTTON_ID) &#123;</span><br></pre></td></tr></table></figure></p>
+<p>There is also the search bar to change. The original Superuser answer
+suggests this, but as I do not use the search bar, I have not
+tried it out, nor do I know what the original behaviour of it was.
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed -i <span class="string">&#x27;s/this\._preventClickSelectsAll = this\._textbox\.focused;/this._preventClickSelectsAll = true;/&#x27;</span>  omni/chrome/browser/content/browser/search/searchbar.js</span><br></pre></td></tr></table></figure></p>
+<p>After editing, we need to re-pack the files:
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> omni &amp;&amp; zip -0DXqr ../omni.ja * &amp;&amp; <span class="built_in">cd</span> -</span><br></pre></td></tr></table></figure></p>
+<p>And replace the original one:
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp -v omni.ja /opt/firefox/browser/omni.ja</span><br></pre></td></tr></table></figure></p>
+<p>You may need to change the ownership of the newly-created archive:
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chown [U]:[G] /opt/firefox/browser/omni.ja</span><br></pre></td></tr></table></figure>
+where <code>[U]</code> and <code>[G]</code> refers to the owner and group of the original
+file (we made a backup at <code>omni.ja.orig</code>).</p>
+<p>To ensure everything takes effect, make a file called <code>.purgecaches</code>
+to make Firefox aware of the changes:
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">touch /opt/firefox/browser/.purgecaches</span><br></pre></td></tr></table></figure></p>
+<p>Okay, from now on, we shall no longer suffer from the <code>clickSelectsAll</code>
+bug.</p>
+<p>Also, you may want to have additional configurations, such as
+<a target="_blank" rel="noopener" href="https://www.userchrome.org/megabar-styling-firefox-address-bar.html">disabling the pop-up list upon clicking address bar</a>
+or <a target="_blank" rel="noopener" href="https://github.com/WesleyBranton/Remove-Firefox-Megabar/blob/master/remove_megabar.css">gettind rid of the address bar expanding effect</a>
+when clicked upon.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>tusooa
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="http://tusooa.github.io/2020/10/01/Fix-firefox-address-bar-clickSelectsAll-bug/" title="Fix firefox address bar clickSelectsAll bug (Spoiler: no re-compilation required.)">http://tusooa.github.io/2020/10/01/Fix-firefox-address-bar-clickSelectsAll-bug/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/firefox/" rel="tag"># firefox</a>
+              <a href="/tags/%E6%97%A0%E5%A5%88/" rel="tag"># 无奈</a>
+              <a href="/tags/%E5%9D%91/" rel="tag"># 坑</a>
+              <a href="/tags/javascript/" rel="tag"># javascript</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/08/24/Pay-another-respect-to-kritacommand-which-we-are-going-beyond/" rel="prev" title="Pay another respect to kritacommand--which we are going beyond">
+                  <i class="fa fa-chevron-left"></i> Pay another respect to kritacommand--which we are going beyond
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+  
+  
+  
+
+
+
+      
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      
+
+      
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">tusooa</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://thistusooa.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://tusooa.github.io/2020/10/01/Fix-firefox-address-bar-clickSelectsAll-bug/";
+    this.page.identifier = "2020/10/01/Fix-firefox-address-bar-clickSelectsAll-bug/";
+    this.page.title = "Fix firefox address bar clickSelectsAll bug (Spoiler: no re-compilation required.)";
+    };
+  NexT.utils.loadComments('#disqus_thread', () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://thistusooa.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

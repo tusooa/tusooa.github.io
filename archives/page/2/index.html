@@ -217,6 +217,13 @@
   </div>
 
 
+<div class="ts-lang-switch-box">
+  <div class="ts-lang-switch-title">
+    <i class="fa fa-language fa-fw"></i>
+  </div>
+  <div id="ts-lang-switch">
+  </div>
+</div>
 
       </section>
     </div>
@@ -400,6 +407,32 @@
   }
   // defer loading until the whole page loading is completed
   window.addEventListener('load', loadCount, false);
+</script>
+
+<script src="/tusooajs/language-switcher.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<script>
+  (function() {
+    const loadLangSwitch = () => {
+      //Tusooa.LanguageSwitcher.displayedLangs = ["en"];
+      const langs = Cookies.getJSON("ts-langs");
+      if (Array.isArray(langs)) {
+        Tusooa.LanguageSwitcher.displayedLangs = langs;
+      }
+      Tusooa.LanguageSwitcher.create(
+        "ts-lang-switch",
+        displayedLangs => {
+          Cookies.set("ts-langs", displayedLangs);
+        });
+    };
+  if (document.readyState === "complete" || document.readyState === "loaded") {
+    loadLangSwitch();
+  } else {
+    document.addEventListener('DOMContentLoaded', function() {
+      loadLangSwitch();
+  })
+  }
+  })();
 </script>
 
 </body>

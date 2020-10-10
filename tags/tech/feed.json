@@ -1,7 +1,7 @@
 {
     "version": "https://jsonfeed.org/version/1",
     "title": "何事西风不待人 • All posts by \"tech\" tag",
-    "description": "A poet, painter, and programmer.",
+    "description": "<span class='ts-langs-group'><span class='ts-lang-en ts-langs ts-langs-show ts-langs-block'>A poet, painter, and programmer.</span><span class='ts-lang-zh-CN ts-langs ts-langs-show ts-langs-block'>写诗画画码代码的。</span></span>",
     "home_page_url": "http://tusooa.github.io",
     "items": [
         {

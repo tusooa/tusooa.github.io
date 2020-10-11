@@ -65,18 +65,32 @@ parameter in &lt;code&gt;_config.yml&lt;/code&gt;. So whenever I click on the
 language switcher, I got a 404. And it is hidden at the very
 bottom of the page --- How should one expect their visitor
 to dig into the deepest hole before they can switch languages?&lt;/span&gt;
-&lt;span class=&#39;ts-lang-zh-CN ts-langs ts-langs-block&#39;&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;span class=&#39;ts-lang-zh-CN ts-langs ts-langs-block&#39;&gt;这玩意儿甚至更可怕了。是是是，&lt;a href=&#34;https://github.com/next-theme/hexo-theme-next&#34;&gt;NexT&lt;/a&gt; 有个叫「语言切换器」
+的东西，但是它总把人引入歧途。让 Hexo 给不同的语言分别生成页面，这我
+怎么改 &lt;code&gt;_config.yml&lt;/code&gt; 里的 &lt;code&gt;language&lt;/code&gt; 参数，也弄不成。所以呢，每次
+按下这语言切换器的时候，404 就浮现在我眼前了。而且这切换器给藏在了页面
+最底下——让访客钻进最深的洞里才许其切换语言，这能成吗？&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#39;ts-lang-en ts-langs ts-langs-show ts-langs-block&#39;&gt;So, well, since NexT&amp;#39;s language switcher sucks, and multi-page
 style multi-language implementation is not feasible, why not just
 put everything all together? NexT at least provides a way to
 customize what texts are shown... in &lt;code&gt;languages.yml&lt;/code&gt;.&lt;/span&gt;
-&lt;span class=&#39;ts-lang-zh-CN ts-langs ts-langs-block&#39;&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;span class=&#39;ts-lang-zh-CN ts-langs ts-langs-block&#39;&gt;啊啊，行吧，NexT 这语言切换器是糟透了，多页面显示多语言也办不到，那么把
+所有东西全放一起，这又如何呢？NexT 至少给了个用 &lt;code&gt;languages.yml&lt;/code&gt; 来控制
+显示什么文字的方法呀......&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#39;ts-lang-en ts-langs ts-langs-show ts-langs-block&#39;&gt;The main idea is to merge NexT&amp;#39;s default translations into one.
 I made a Perl script for this. The text for every language is a
 &lt;code&gt;span&lt;/code&gt;, and they are next to each other. Use css to put a divider
 between every visible &lt;code&gt;span&lt;/code&gt;. Whether a language is shown is controlled
 by a JavaScript program that adds or removes classes from the elements.&lt;/span&gt;
-&lt;span class=&#39;ts-lang-zh-CN ts-langs ts-langs-block&#39;&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;span class=&#39;ts-lang-zh-CN ts-langs ts-langs-block&#39;&gt;大意就是把 NexT 的默认翻译全整一起去。这事我写了个 Perl 脚本去做。每种语言的文字
+装在一个 &lt;code&gt;span&lt;/code&gt; 里，并并排。用 css 在每个显示了的 &lt;code&gt;span&lt;/code&gt; 之间，摆一个分割线。
+至于某种语言是显示呢是隐藏呢，这让 JavaScript 程序来控制，就从元素里加上或是减去
+些 class 就好。&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#39;ts-lang-en ts-langs ts-langs-show ts-langs-block&#39;&gt;As I am too lazy, the code is all &lt;a href=&#34;https://gitlab.com/tusooa/blog&#34;&gt;on GitLab&lt;/a&gt;.
+Whether this is a viable implementation is left as an exercise
+for the reader.&lt;/span&gt;
+&lt;span class=&#39;ts-lang-zh-CN ts-langs ts-langs-block&#39;&gt;因为我太懒了，代码都在 &lt;a href=&#34;https://gitlab.com/tusooa/blog&#34;&gt;GitLab 上&lt;/a&gt;。这东西到底可行不，
+留给读者作练习。&lt;/span&gt;&lt;/p&gt;
 
  ]]></description>
         </item>

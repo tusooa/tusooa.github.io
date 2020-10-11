@@ -189,14 +189,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-count">13</span>
           <span class="site-state-item-name"><span class='ts-langs-group'><span class='ts-lang-en ts-langs ts-langs-show'>posts</span><span class='ts-lang-zh-CN ts-langs ts-langs-show'>日志</span></span></span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">13</span>
         <span class="site-state-item-name"><span class='ts-langs-group'><span class='ts-lang-en ts-langs ts-langs-show'>tags</span><span class='ts-lang-zh-CN ts-langs ts-langs-show'>标签</span></span></span></a>
       </div>
   </nav>
@@ -210,6 +210,9 @@
       </span>
       <span class="links-of-author-item">
         <a href="https://invent.kde.org/tusooaw" title="KDE Invent → https:&#x2F;&#x2F;invent.kde.org&#x2F;tusooaw" rel="noopener" target="_blank"><i class="fab fa-gitlab fa-fw"></i>KDE Invent</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://t.tusooa.xyz/@tusooa" title="Mastodon → https:&#x2F;&#x2F;t.tusooa.xyz&#x2F;@tusooa" rel="noopener" target="_blank"><i class="fab fa-mastodon fa-fw"></i>Mastodon</a>
       </span>
       <span class="links-of-author-item">
         <a href="/atom.xml" title="Feed → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>Feed</a>
@@ -339,9 +342,9 @@ a relatively high delay when switching between snapshots. However this is not wh
 on my older laptop, so I am really waiting for his test results in order to further investigate 
 the problem.</p>
 <p>But there <em>is</em> something interesting happening just when I am randomly testing things. From
-Krita’s debug output, I saw <code>QObject::connect()</code> complaining about the arguments I passed, 
-saying it is expecting parenthesis. “Okay,” I thought, “then there have to be something wrong 
-with the <a target="_blank" rel="noopener" href="https://invent.kde.org/kde/krita/merge_requests/41/diffs?commit_id=8c465f12139318e86ab36d343e1db8bbbb141e06">code I wrote</a>.” 
+Krita&#39;s debug output, I saw <code>QObject::connect()</code> complaining about the arguments I passed, 
+saying it is expecting parenthesis. &quot;Okay,&quot; I thought, &quot;then there have to be something wrong 
+with the <a target="_blank" rel="noopener" href="https://invent.kde.org/kde/krita/merge_requests/41/diffs?commit_id=8c465f12139318e86ab36d343e1db8bbbb141e06">code I wrote</a>.&quot; 
 And that was quite confusing. I remember having used member function pointers in those places, 
 got a compile-time error since <code>KisSignalAutoConnectionsStore</code> did not support the new syntax,
 then switched back to the <code>SINGAL()</code> and <code>SLOT()</code> macros. <code>KisSignalAutoConnectionsStore</code> is 
@@ -366,7 +369,7 @@ According to QObject document, the signature for new-style <code>connect()</code
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">QMetaObject::Connection <span class="title">QObject::connect</span><span class="params">(<span class="keyword">const</span> QObject *sender, PointerToMemberFunction signal, <span class="keyword">const</span> QObject *context, Functor functor, Qt::ConnectionType type = Qt::AutoConnection)</span></span></span><br></pre></td></tr></table></figure>
 <p>Okay, so we know that <code>sender</code> and <code>receiver</code> should be pointers to <code>QObject</code>s, and 
 either the type of <code>signal</code> or <code>functor</code> we do not know. 
-Now let’s make our <code>KisSignalAutoConnection</code> constructor a template function: </p>
+Now let&#39;s make our <code>KisSignalAutoConnection</code> constructor a template function: </p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="class"><span class="keyword">class</span> <span class="title">Signal</span>, <span class="title">class</span> <span class="title">Method</span>&gt;</span></span><br><span class="line"><span class="class"><span class="title">inline</span> <span class="title">KisSignalAutoConnection</span>(<span class="title">const</span> <span class="title">QObject</span> *<span class="title">sender</span>, <span class="title">Signal</span> <span class="title">signal</span>,</span></span><br><span class="line"><span class="class">                               <span class="title">const</span> <span class="title">QObject</span> *<span class="title">receiver</span>, <span class="title">Method</span> <span class="title">method</span></span></span><br><span class="line"><span class="class">                               <span class="title">Qt</span>:</span>:ConnectionType type = Qt::AutoConnection);</span><br></pre></td></tr></table></figure>
 <p>But when these parameters are passed to <code>QObject::connect()</code>, we get a compile-time error, saying 
 there is no matching overload for <code>connect()</code>.</p>
@@ -388,9 +391,9 @@ into the template, and pass everything as-is to <code>QObject::connect()</code>:
 <p>Sounds viable. But how can we store the four parameters? It might be intuitive to make another base class, 
 say, <code>KisSignalAutoConnectionBase()</code>, and make <code>KisSignalAutoConnection</code> a template class, so we can 
 store <code>sender</code>, <code>receiver</code>, etc.</p>
-<p>But wait, isn’t this just too complex? First of all, we do not have any overridden functions 
+<p>But wait, isn&#39;t this just too complex? First of all, we do not have any overridden functions 
 except for the destructor. What is more, we do not seem to have any valuable things in that base 
-class – it would be an empty class. The use of inheritance here is ugly and useless. </p>
+class -- it would be an empty class. The use of inheritance here is ugly and useless. </p>
 <p>And, we do not need to store the four parameters at all. <code>QObject::connect()</code> returns a 
 <code>QMetaObject::Connection</code>, which can be used later to <code>disconnect()</code> it. So instead of 
 the parameters passed to <code>connect()</code>, we just store the <code>Connection</code> object. And that is not 
@@ -399,7 +402,7 @@ part of the template:</p>
 <p>And with the <a target="_blank" rel="noopener" href="https://invent.kde.org/kde/krita/merge_requests/41/diffs?commit_id=39262a9385fb933ab428f4a72939a692994e0f21#dbe442eaf45dc765d904fe6d9922b309d19f1d5a">test code</a> mentioned above, 
 we do make sure that the new implementation works well with both syntaxes. </p>
 <p>So, great, krita developers, we can use the new syntax for auto connections as well. </p>
-<p>PS: There will soon be another post on my work of the snapshot docker – it’s almost finished!</p>
+<p>PS: There will soon be another post on my work of the snapshot docker -- it&#39;s almost finished!</p>
 
     </div>
 

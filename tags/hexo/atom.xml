@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>http://tusooa.github.io</id>
+    <title>何事西风不待人 • Posts by &#34;hexo&#34; tag</title>
+    <link href="http://tusooa.github.io" />
+    <updated>2020-10-10T20:55:15.000Z</updated>
+    <category term="kde" />
+    <category term="krita" />
+    <category term="c++" />
+    <category term="code" />
+    <category term="firefox" />
+    <category term="无奈" />
+    <category term="坑" />
+    <category term="javascript" />
+    <category term="tech" />
+    <category term="hexo" />
+    <category term="css" />
+    <category term="帜" />
+    <category term="复杂" />
+    <entry>
+        <id>http://tusooa.github.io/2020/10/10/Some-multilingual-hacks-on-Hexo/</id>
+        <title>&lt;span class=&#39;ts-langs-group&#39;&gt; &lt;span class=&#39;ts-lang-en ts-langs ts-langs-show ts-langs-block&#39;&gt; Some multilingual hacks on Hexo &lt;/span&gt; &lt;span class=&#39;ts-lang-zh-CN ts-langs ts-langs-show ts-langs-block&#39;&gt; 瞎折腾Hexo的多语言 &lt;/span&gt; &lt;/span&gt;</title>
+        <link rel="alternate" href="http://tusooa.github.io/2020/10/10/Some-multilingual-hacks-on-Hexo/"/>
+        <content type="html">&lt;p&gt;&lt;span class=&#39;ts-lang-en ts-langs ts-langs-show ts-langs-block&#39;&gt;I do not know why exactly I am so stubborn to insist on making this
+site multilingual, and in a way that you may see multiple languages
+at the same time. But it is something.&lt;/span&gt;
+&lt;span class=&#39;ts-lang-zh-CN ts-langs ts-langs-block&#39;&gt;我自己也不明白为什么我执拗得一定要把这网站做成多语言的，还是叫人
+能同时看到多种语言的那种。但聊胜于无吧。&lt;/span&gt;&lt;/p&gt;
+&lt;a id=&#34;more&#34;&gt;&lt;/a&gt;
+&lt;h1 id=&#34;A-weird-thing-about-HexoHexo-的诡异事件&#34;&gt;&lt;a href=&#34;#A-weird-thing-about-HexoHexo-的诡异事件&#34; class=&#34;headerlink&#34; title=&#34;A weird thing about HexoHexo 的诡异事件&#34;&gt;&lt;/a&gt;&lt;span class=&#39;ts-langs-group&#39;&gt;&lt;span class=&#39;ts-lang-en ts-langs ts-langs-show&#39;&gt;A weird thing about Hexo&lt;/span&gt;&lt;span class=&#39;ts-lang-zh-CN ts-langs&#39;&gt;Hexo 的诡异事件&lt;/span&gt;&lt;/span&gt;&lt;/h1&gt;&lt;p&gt;&lt;span class=&#39;ts-lang-en ts-langs ts-langs-show ts-langs-block&#39;&gt;The &lt;em&gt;first&lt;/em&gt; weird thing I got, when I was trying to figure out
+&lt;a href=&#34;https://github.com/next-theme/hexo-theme-next&#34;&gt;hexo-theme-next&lt;/a&gt;: sometimes &lt;code&gt;hexo server&lt;/code&gt; gives
+the perfect result, but when I &lt;code&gt;hexo generate&lt;/code&gt; or &lt;code&gt;hexo deploy&lt;/code&gt;,
+nothing will be correct. Everything is just malformed, and it
+does not change even if I &lt;code&gt;hexo clean&lt;/code&gt;.&lt;/span&gt;
+&lt;span class=&#39;ts-lang-zh-CN ts-langs ts-langs-block&#39;&gt;我在折腾 &lt;a href=&#34;https://github.com/next-theme/hexo-theme-next&#34;&gt;hexo-theme-next&lt;/a&gt; 的时候碰到的第一个诡异事件是：
+有时候 &lt;code&gt;hexo server&lt;/code&gt; 给出了个无懈可击的结果，但只要一 &lt;code&gt;hexo generate&lt;/code&gt;
+或者 &lt;code&gt;hexo deploy&lt;/code&gt;，全完蛋。整个网站看着都非常诡异，甚至我
+&lt;code&gt;hexo clean&lt;/code&gt; 了之后也没有丝毫变化。&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#39;ts-lang-en ts-langs ts-langs-show ts-langs-block&#39;&gt;After digging a lot into the source code, and enabling &lt;code&gt;--debug&lt;/code&gt;,
+I finally found that there are some backup files that are also
+processed. And the content of those files &lt;em&gt;does&lt;/em&gt; correspond to
+the wrong contents on the site. &amp;quot;Okay,&amp;quot; hereby I say, &amp;quot;this
+behaviour is indeed ridiculous.&amp;quot;&lt;/span&gt;
+&lt;span class=&#39;ts-lang-zh-CN ts-langs ts-langs-block&#39;&gt;钻进源码里东张西望了好久，再合着 &lt;code&gt;--debug&lt;/code&gt; 的加成，我终于看到了一些备份文件
+也被处理了。而其内容&lt;strong&gt;确然&lt;/strong&gt;是应了网站上有问题的东西。「行吧，」如是我说，
+「是事直令人齿冷。」&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#39;ts-lang-en ts-langs ts-langs-show ts-langs-block&#39;&gt;And thus I added the ignore rules to ignore all such files,
+and everything is hopefully back in place.&lt;/span&gt;
+&lt;span class=&#39;ts-lang-zh-CN ts-langs ts-langs-block&#39;&gt;所以我加了忽略规则来忽略这种文件，世界终于清净了，谢天谢地。&lt;/span&gt;&lt;/p&gt;
+&lt;figure class=&#34;highlight yaml&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;attr&#34;&gt;ignore:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;  &lt;span class=&#34;bullet&#34;&gt;-&lt;/span&gt; &lt;span class=&#34;string&#34;&gt;&amp;quot;**/*~&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;  &lt;span class=&#34;bullet&#34;&gt;-&lt;/span&gt; &lt;span class=&#34;string&#34;&gt;&amp;quot;**/#*&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;  &lt;span class=&#34;bullet&#34;&gt;-&lt;/span&gt; &lt;span class=&#34;string&#34;&gt;&amp;quot;**/.#*&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h1 id=&#34;NexT-39-s-language-switcherNexT-的语言切换器&#34;&gt;&lt;a href=&#34;#NexT-39-s-language-switcherNexT-的语言切换器&#34; class=&#34;headerlink&#34; title=&#34;NexT&amp;#39;s language switcherNexT 的语言切换器&#34;&gt;&lt;/a&gt;&lt;span class=&#39;ts-langs-group&#39;&gt;&lt;span class=&#39;ts-lang-en ts-langs ts-langs-show&#39;&gt;NexT&amp;#39;s language switcher&lt;/span&gt;&lt;span class=&#39;ts-lang-zh-CN ts-langs&#39;&gt;NexT 的语言切换器&lt;/span&gt;&lt;/span&gt;&lt;/h1&gt;&lt;p&gt;&lt;span class=&#39;ts-lang-en ts-langs ts-langs-show ts-langs-block&#39;&gt;That is an even more terrible part that comes in. Yes,
+&lt;a href=&#34;https://github.com/next-theme/hexo-theme-next&#34;&gt;NexT&lt;/a&gt; comes with such a thing called a
+&amp;quot;language switcher,&amp;quot; but it never takes you to a right
+place. I cannot even get Hexo generate pages for
+different languages, no matter how I change the &lt;code&gt;language&lt;/code&gt;
+parameter in &lt;code&gt;_config.yml&lt;/code&gt;. So whenever I click on the
+language switcher, I got a 404. And it is hidden at the very
+bottom of the page --- How should one expect their visitor
+to dig into the deepest hole before they can switch languages?&lt;/span&gt;
+&lt;span class=&#39;ts-lang-zh-CN ts-langs ts-langs-block&#39;&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#39;ts-lang-en ts-langs ts-langs-show ts-langs-block&#39;&gt;So, well, since NexT&amp;#39;s language switcher sucks, and multi-page
+style multi-language implementation is not feasible, why not just
+put everything all together? NexT at least provides a way to
+customize what texts are shown... in &lt;code&gt;languages.yml&lt;/code&gt;.&lt;/span&gt;
+&lt;span class=&#39;ts-lang-zh-CN ts-langs ts-langs-block&#39;&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#39;ts-lang-en ts-langs ts-langs-show ts-langs-block&#39;&gt;The main idea is to merge NexT&amp;#39;s default translations into one.
+I made a Perl script for this. The text for every language is a
+&lt;code&gt;span&lt;/code&gt;, and they are next to each other. Use css to put a divider
+between every visible &lt;code&gt;span&lt;/code&gt;. Whether a language is shown is controlled
+by a JavaScript program that adds or removes classes from the elements.&lt;/span&gt;
+&lt;span class=&#39;ts-lang-zh-CN ts-langs ts-langs-block&#39;&gt;&lt;/span&gt;&lt;/p&gt;
+
+</content>
+        <category term="坑" />
+        <category term="javascript" />
+        <category term="hexo" />
+        <category term="css" />
+        <updated>2020-10-10T20:55:15.000Z</updated>
+    </entry>
+</feed>

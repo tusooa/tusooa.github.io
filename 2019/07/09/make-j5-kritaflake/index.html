@@ -190,14 +190,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-count">13</span>
           <span class="site-state-item-name"><span class='ts-langs-group'><span class='ts-lang-en ts-langs ts-langs-show'>posts</span><span class='ts-lang-zh-CN ts-langs ts-langs-show'>日志</span></span></span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">13</span>
         <span class="site-state-item-name"><span class='ts-langs-group'><span class='ts-lang-en ts-langs ts-langs-show'>tags</span><span class='ts-lang-zh-CN ts-langs ts-langs-show'>标签</span></span></span></a>
       </div>
   </nav>
@@ -211,6 +211,9 @@
       </span>
       <span class="links-of-author-item">
         <a href="https://invent.kde.org/tusooaw" title="KDE Invent → https:&#x2F;&#x2F;invent.kde.org&#x2F;tusooaw" rel="noopener" target="_blank"><i class="fab fa-gitlab fa-fw"></i>KDE Invent</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://t.tusooa.xyz/@tusooa" title="Mastodon → https:&#x2F;&#x2F;t.tusooa.xyz&#x2F;@tusooa" rel="noopener" target="_blank"><i class="fab fa-mastodon fa-fw"></i>Mastodon</a>
       </span>
       <span class="links-of-author-item">
         <a href="/atom.xml" title="Feed → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>Feed</a>
@@ -341,7 +344,7 @@ Sean Parent uses for Photoshop, and adapted it for the derived d-pointers in Fla
 <p>As I mentioned in the <a target="_blank" rel="noopener" href="https://phabricator.kde.org/T10901">task page</a>, derived d-pointers originally 
 in Flake are a barrier to implicit sharing. One of the reasons is that we need to write more code (either 
 <code>KisSharedDescendent</code> wrapper class, or repeated code for virtual clone functions). Also, derived 
-d-pointers do not actually encapsulate the data in the parent classes – for example, the members in 
+d-pointers do not actually encapsulate the data in the parent classes -- for example, the members in 
 <code>KoShapePrivate</code> are all accessible by descendents of <code>KoShape</code>, say, <code>KoShapeContainer</code>. That is probably 
 not how encapsulating should work. So in the end we decided to get rid of derived d-pointers in Flake.</p>
 <p>This leads to one problem, however, in the class <code>KoShapeGroup</code>. <code>KoShapeGroup</code> is a descendent of <code>KoShapeContainer</code>, 
@@ -375,14 +378,14 @@ of <code>KoShapeGroup</code>, at which time the d-pointer is still accessible.</
 <h2 id="q-pointers"><a href="#q-pointers" class="headerlink" title="q-pointers"></a>q-pointers</h2><p>TL;DR: We also got rid of it. </p>
 <p>q-pointers are a method used in Qt to hide private methods from the header files, in order to improve 
 binary compatibility. q-pointers are stored in *Private classes (<code>d</code>s), indicating the object that owns 
-this private instance. But this is, of course, conflicting with the principle of “sharing” because 
+this private instance. But this is, of course, conflicting with the principle of &quot;sharing&quot; because 
 the situation now is that multiple objects can own the same data. The q-pointers in flake is rather confusing 
 under such circumstances, since the private data cannot know which object is the caller. </p>
 <p>To avoid this confusion, there are multiple ways:</p>
 <ol>
 <li>to move all the functions regarding q-pointers to the public classes; </li>
 <li>to pass the q-pointer every time when calling those functions in private classes; or </li>
-<li>to add another layer of “shared data” in the d-pointer and keep the q-pointers in the unshared part. </li>
+<li>to add another layer of &quot;shared data&quot; in the d-pointer and keep the q-pointers in the unshared part. </li>
 </ol>
 <h2 id="implicit-sharing"><a href="#implicit-sharing" class="headerlink" title="implicit sharing"></a>implicit sharing</h2><p>To enable implicit sharing for the <code>KoShape</code> hierarchy, the only thing left to be done is to 
 change the <code>QScopedPointer&lt;Private&gt; d;</code> in the header file to <code>QSharedDataPointer&lt;Private&gt; d;</code> 

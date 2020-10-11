@@ -52,6 +52,8 @@ if (! window.Tusooa.LanguageSwitcher) {
     for (const lang of s.availableLangs) {
       if (! s.displayedLangs.includes(lang)) {
         s.hide(lang, /* force = */ true);
+      } else {
+        s.show(lang, /* force = */ true);
       }
     }
 
@@ -99,8 +101,8 @@ if (! window.Tusooa.LanguageSwitcher) {
     elem.appendChild(checkBoxList);
   };
 
-  s.show = lang => {
-    if (s.displayedLangs.includes(lang)) {
+  s.show = (lang, force) => {
+    if (s.displayedLangs.includes(lang) && !force) {
       // This language is already shown
       return s.FAILED;
     }

@@ -2723,7 +2723,7 @@ hr {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #3ff;
+  background: #ab698b;
   display: inline-block;
   margin-right: 3px;
   transform: translateY(-2px);
@@ -2767,6 +2767,10 @@ hr {
 .ts-langs-show.ts-langs-block ~ .ts-langs-show.ts-langs-block::before {
   content: '';
   display: block;
+}
+.post-title-link .ts-langs-group {
+  display: inline-flex;
+  flex-direction: column;
 }
 .ts-langswitch-enabled {
   font-weight: bold;

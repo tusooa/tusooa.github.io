@@ -189,14 +189,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-count">13</span>
           <span class="site-state-item-name"><span class='ts-langs-group'><span class='ts-lang-en ts-langs ts-langs-show'>posts</span><span class='ts-lang-zh-CN ts-langs ts-langs-show'>日志</span></span></span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">13</span>
         <span class="site-state-item-name"><span class='ts-langs-group'><span class='ts-lang-en ts-langs ts-langs-show'>tags</span><span class='ts-lang-zh-CN ts-langs ts-langs-show'>标签</span></span></span></a>
       </div>
   </nav>
@@ -210,6 +210,9 @@
       </span>
       <span class="links-of-author-item">
         <a href="https://invent.kde.org/tusooaw" title="KDE Invent → https:&#x2F;&#x2F;invent.kde.org&#x2F;tusooaw" rel="noopener" target="_blank"><i class="fab fa-gitlab fa-fw"></i>KDE Invent</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://t.tusooa.xyz/@tusooa" title="Mastodon → https:&#x2F;&#x2F;t.tusooa.xyz&#x2F;@tusooa" rel="noopener" target="_blank"><i class="fab fa-mastodon fa-fw"></i>Mastodon</a>
       </span>
       <span class="links-of-author-item">
         <a href="/atom.xml" title="Feed → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>Feed</a>
@@ -341,7 +344,7 @@ is subclassed by <code>DefaultTool</code>. The behaviours of <code>KoInteraction
 are defined by <code>KoInteractionStrategy</code>s. Upon the press of the mouse button, <code>DefaultTool</code> 
 creates an instance of some subclass of <code>KoInteractionStrategy</code>, say, <code>ShapeMoveStrategy</code>, 
 according to the point of the click as well as keyboard modifiers. Mouse move events after that 
-are all handled by the interaction strategy. When the mouse is released, the interaction strategy’s 
+are all handled by the interaction strategy. When the mouse is released, the interaction strategy&#39;s 
 <code>finishInteraction()</code> is called, and then <code>createCommand()</code>. If the latter returns some 
 <code>KUndo2Command</code>, the command is added to the undo history. Till now it sounds simple.</p>
 <p>So how does the stroke system come in? I have experimented the interaction strategy 
@@ -352,28 +355,28 @@ A stroke is a set of jobs scheduled and run by a <code>KisStrokesFacade</code> (
 One creates the stroke in a strokes facade using a stroke strategy, which defines the behaviour 
 of the stroke. After creation, jobs can be added to the stroke and then executed at some later 
 time (it is asynchronous). </p>
-<p>So combining these two, we have an interaction strategy and a stroke strategy – 
+<p>So combining these two, we have an interaction strategy and a stroke strategy -- 
 when the interaction strategy is created, we start the stroke in the image; 
 when there is mouse move, we add individual jobs that change the shapes to the stroke; 
 when the mouse released, we end the stroke. 
 My discussion with Dmitry firstly tended to make the interaction strategy inherit 
 the stroke strategy but later it proves not a viable solution since the interaction 
 strategy is owned and deleted by <code>KoInteractionTool</code> while the stroke strategy is owned 
-by the stroke — which will lead to double deletion. So we divide it into two classes 
+by the stroke --- which will lead to double deletion. So we divide it into two classes 
 instead: the interaction strategy starts the stroke, and the stroke strategy takes a copy 
 of the current active layer upon creation; when handling mouse move events, a job is added 
 to the stroke to modify the current layer; finally when the interaction finishes, 
 the interaction strategy ends the stroke and creates an undo command if the layer has been 
 changed.</p>
-<p>A problem I found lies in the final stage–if the mouse is released as soon as being pressed 
+<p>A problem I found lies in the final stage--if the mouse is released as soon as being pressed 
 and no undo command is created, Krita will simply crash. It does not happen when I use <code>gdb</code> 
 to start Krita so it seems to be a timing issue though it leads to difficulty for debugging as 
 well. Dmitry used a self-modified version of Qt to produce a backtrace, indicating the problem 
-probably lies in <code>KisCanvas2</code>‘s <code>canvasUpdateCompressor</code>, which is not thread-safe. However, 
+probably lies in <code>KisCanvas2</code>&#39;s <code>canvasUpdateCompressor</code>, which is not thread-safe. However, 
 after I changed it to <code>KisThreadSafeSignalCompressor</code>, the crash still happens, unfortunately. </p>
 <p>The final inspiration comes from the comments in <code>KisThreadSafeSignalCompressor</code>, though. It 
-indicates we cannot delete the compressor from other threads — we have to use <code>obj-&gt;deleteLater()</code> 
-instead, since it lies in the gui thread. And aha, that is the problem. The stroke strategy’s destructor 
+indicates we cannot delete the compressor from other threads --- we have to use <code>obj-&gt;deleteLater()</code> 
+instead, since it lies in the gui thread. And aha, that is the problem. The stroke strategy&#39;s destructor 
 is executed in the image thread; if the undo command is not created, there is only one reference to 
 our copied <code>KisNode</code>, namely in our stroke strategy, so it has to be destructed there. However, upon 
 the creation of the <code>KisNode</code>, it is moved into the gui thread. So it simply means we cannot let it 

@@ -17,24 +17,24 @@
     var CONFIG = {"hostname":"tusooa.github.io","root":"/","scheme":"Mist","version":"8.0.1","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"<span class='ts-langs-group'><span class='ts-lang-en ts-langs ts-langs-show'>Searching...</span><span class='ts-lang-zh-CN ts-langs ts-langs-show'>搜索...</span></span>","empty":"<span class='ts-langs-group'><span class='ts-lang-en ts-langs ts-langs-show'>We didn't find any results for the search: ${query}</span><span class='ts-lang-zh-CN ts-langs ts-langs-show'>没有找到任何搜索结果：${query}</span></span>","hits_time":"<span class='ts-langs-group'><span class='ts-lang-en ts-langs ts-langs-show'>${hits} results found in ${hits} ms</span><span class='ts-lang-zh-CN ts-langs ts-langs-show'>找到 ${hits} 个搜索结果（用时 ${time} 毫秒）</span></span>","hits":"<span class='ts-langs-group'><span class='ts-lang-en ts-langs ts-langs-show'>${hits} results found</span><span class='ts-lang-zh-CN ts-langs ts-langs-show'>找到 ${hits} 个搜索结果</span></span>"}};
   </script>
 
-  <meta name="description" content="Your work is gonna make Krita significantly different. -- Wolthera, Krita developer and digital artist  Krita&#39;s undo system, namely kritacommand, was added 8 years ago to Calligra under the name">
+  <meta name="description" content="I do not know why exactly I am so stubborn to insist on making this site multilingual, and in a way that you may see multiple languages at the same time. But it is something. 我自己也不明白为什么我执拗得一定要把这网站做成多语">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Pay another respect to kritacommand--which we are going beyond">
-<meta property="og:url" content="http://tusooa.github.io/2019/08/24/Pay-another-respect-to-kritacommand-which-we-are-going-beyond/index.html">
+<meta property="og:title" content="&lt;span class&#x3D;&#39;ts-langs-group&#39;&gt; &lt;span class&#x3D;&#39;ts-lang-en ts-langs ts-langs-show ts-langs-block&#39;&gt; Some multilingual hacks on Hexo &lt;&#x2F;span&gt; &lt;span class&#x3D;&#39;ts-lang-zh-CN ts-langs ts-langs-show ts-langs-block&#39;&gt; 瞎折腾Hexo的多语言 &lt;&#x2F;span&gt; &lt;&#x2F;span&gt;">
+<meta property="og:url" content="http://tusooa.github.io/2020/10/10/Some-multilingual-hacks-on-Hexo/index.html">
 <meta property="og:site_name" content="何事西风不待人">
-<meta property="og:description" content="Your work is gonna make Krita significantly different. -- Wolthera, Krita developer and digital artist  Krita&#39;s undo system, namely kritacommand, was added 8 years ago to Calligra under the name">
+<meta property="og:description" content="I do not know why exactly I am so stubborn to insist on making this site multilingual, and in a way that you may see multiple languages at the same time. But it is something. 我自己也不明白为什么我执拗得一定要把这网站做成多语">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2019-08-24T23:51:09.000Z">
-<meta property="article:modified_time" content="2020-10-03T04:24:15.275Z">
+<meta property="article:published_time" content="2020-10-10T20:55:15.000Z">
+<meta property="article:modified_time" content="2020-10-11T01:15:59.748Z">
 <meta property="article:author" content="tusooa">
-<meta property="article:tag" content="kde">
-<meta property="article:tag" content="krita">
-<meta property="article:tag" content="c++">
-<meta property="article:tag" content="tech">
+<meta property="article:tag" content="坑">
+<meta property="article:tag" content="javascript">
+<meta property="article:tag" content="hexo">
+<meta property="article:tag" content="css">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://tusooa.github.io/2019/08/24/Pay-another-respect-to-kritacommand-which-we-are-going-beyond/">
+<link rel="canonical" href="http://tusooa.github.io/2020/10/10/Some-multilingual-hacks-on-Hexo/">
 
 
 <script class="page-configurations">
@@ -47,7 +47,7 @@
   };
 </script>
 
-  <title>Pay another respect to kritacommand--which we are going beyond | 何事西风不待人</title>
+  <title>Some multilingual hacks on Hexo | 何事西风不待人</title>
   
 
 
@@ -174,7 +174,7 @@
 
       <!--noindex-->
       <section class="post-toc-wrap sidebar-panel">
-          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#the-HACK-code-in-the-stroke-strategy"><span class="nav-number">1.</span> <span class="nav-text">the HACK code in the stroke strategy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Path-tool-crashing-when-editing-calligraphic-shapes"><span class="nav-number">2.</span> <span class="nav-text">Path tool crashing when editing calligraphic shapes</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Keeping-selections-after-undo-redoing"><span class="nav-number">3.</span> <span class="nav-text">Keeping selections after undo&#x2F;redoing</span></a></li></ol></div>
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#A-weird-thing-about-HexoHexo-%E7%9A%84%E8%AF%A1%E5%BC%82%E4%BA%8B%E4%BB%B6"><span class="nav-number">1.</span> <span class="nav-text">A weird thing about HexoHexo 的诡异事件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#NexT-39-s-language-switcherNexT-%E7%9A%84%E8%AF%AD%E8%A8%80%E5%88%87%E6%8D%A2%E5%99%A8"><span class="nav-number">2.</span> <span class="nav-text">NexT&#39;s language switcherNexT 的语言切换器</span></a></li></ol></div>
       </section>
       <!--/noindex-->
 
@@ -267,7 +267,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://tusooa.github.io/2019/08/24/Pay-another-respect-to-kritacommand-which-we-are-going-beyond/">
+    <link itemprop="mainEntityOfPage" href="http://tusooa.github.io/2020/10/10/Some-multilingual-hacks-on-Hexo/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="https://secure.gravatar.com/avatar/7a3e6041334f3007176efc960fb6ba45?size=400">
@@ -280,7 +280,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Pay another respect to kritacommand--which we are going beyond
+          <span class='ts-langs-group'> <span class='ts-lang-en ts-langs ts-langs-show ts-langs-block'> Some multilingual hacks on Hexo </span> <span class='ts-lang-zh-CN ts-langs ts-langs-show ts-langs-block'> 瞎折腾Hexo的多语言 </span> </span>
         </h1>
 
         <div class="post-meta-container">
@@ -291,7 +291,7 @@
       </span>
       <span class="post-meta-item-text"><span class='ts-langs-group'><span class='ts-lang-en ts-langs ts-langs-show'>Posted on</span><span class='ts-lang-zh-CN ts-langs ts-langs-show'>发表于</span></span></span>
 
-      <time title="<span class='ts-langs-group'><span class='ts-lang-en ts-langs ts-langs-show'>Created</span><span class='ts-lang-zh-CN ts-langs ts-langs-show'>创建时间</span></span>: 2019-08-24 19:51:09" itemprop="dateCreated datePublished" datetime="2019-08-24T19:51:09-04:00">2019-08-24</time>
+      <time title="<span class='ts-langs-group'><span class='ts-lang-en ts-langs ts-langs-show'>Created</span><span class='ts-lang-zh-CN ts-langs ts-langs-show'>创建时间</span></span>: 2020-10-10 16:55:15" itemprop="dateCreated datePublished" datetime="2020-10-10T16:55:15-04:00">2020-10-10</time>
     </span>
 
   
@@ -303,27 +303,27 @@
       </span>
       <span class="post-meta-item-text">Disqus: </span>
     
-    <a title="disqus" href="/2019/08/24/Pay-another-respect-to-kritacommand-which-we-are-going-beyond/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/08/24/Pay-another-respect-to-kritacommand-which-we-are-going-beyond/" itemprop="commentCount"></span>
+    <a title="disqus" href="/2020/10/10/Some-multilingual-hacks-on-Hexo/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/10/10/Some-multilingual-hacks-on-Hexo/" itemprop="commentCount"></span>
     </a>
   </span>
   
     <!-- Use tags to replace categories -->
     <span class="post-meta-item">
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/tags/kde/" itemprop="url" rel="index"><span itemprop="name">kde</span></a>
+          <a href="/tags/%E5%9D%91/" itemprop="url" rel="index"><span itemprop="name">坑</span></a>
         </span>
           , 
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/tags/krita/" itemprop="url" rel="index"><span itemprop="name">krita</span></a>
+          <a href="/tags/javascript/" itemprop="url" rel="index"><span itemprop="name">javascript</span></a>
         </span>
           , 
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/tags/c/" itemprop="url" rel="index"><span itemprop="name">c++</span></a>
+          <a href="/tags/hexo/" itemprop="url" rel="index"><span itemprop="name">hexo</span></a>
         </span>
           , 
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/tags/tech/" itemprop="url" rel="index"><span itemprop="name">tech</span></a>
+          <a href="/tags/css/" itemprop="url" rel="index"><span itemprop="name">css</span></a>
         </span>
     </span>
 
@@ -336,17 +336,55 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <blockquote>
-<p>Your work is gonna make Krita significantly different.
--- <a target="_blank" rel="noopener" href="https://invent.kde.org/woltherav">Wolthera</a>, Krita developer and digital artist</p>
-</blockquote>
-<p>Krita&#39;s undo system, namely <code>kritacommand</code>, was <a target="_blank" rel="noopener" href="https://invent.kde.org/kde/krita/commit/76fc48a7ce15afb93c072d4faa77da831517ee52">added</a> 8 years ago to Calligra under the name of <code>kundo2</code>, as a fork of Qt&#39;s undo framework. The use of undo commands, however, might have an even longer history. Undo commands provide a way to revert individual actions. Up to now, most (<a target="_blank" rel="noopener" href="https://invent.kde.org/kde/krita/merge_requests/32/diffs">though not all</a>) undo commands do it by providing two sets of code that do and undo the actions, respectively. Drawbacks of this system includes (1) it is not very easy to manage; (2) it may introduce duplicated code; and (3) it makes it hard to access a previous document state without actually going back to that state. What I do is to start getting rid of such situation.</p>
-<p>The plan for a new system is to use shallow copies to store documents at different states. Dmitry said &quot;it was something we really want to do and allows us to make historical brushes (fetch content from earlier document states).&quot; And according to him, he spent years to implement copy-on-write on paint layers. He suggested me to start from vector layers which he thought would be easier since it does not need to be very thread-safe. </p>
-<p>I completely understood that was a challenge, but did not realize where the difficult part was until I come here. Copy-on-write is not the challenging part. We have <code>QSharedDataPointer</code> and almost all the work is to routinely replace the same code. Porting tools is more difficult. The old flake tools are running under the GUI thread, which makes no requirement on thread-safety. Technically we do not need to run it in a stroke / in image thread but with no multithreading the tools runs too slowly on some computers (read as &quot;my Thinkpad laptop&quot;) so I am not unwilling to take this extra challenge. In previous posts I described how the strokes work and the problems I encountered. Besides that there are still some problems I need to face.</p>
-<h2 id="the-HACK-code-in-the-stroke-strategy"><a href="#the-HACK-code-in-the-stroke-strategy" class="headerlink" title="the HACK code in the stroke strategy"></a>the HACK code in the stroke strategy</h2><p>At the last of the strokes post, I proposed a fix to the crash when deleting <code>KisNode</code>, which is messy. After testing with Dmitry at the sprint, we discovered that the real problems lies in <code>KoShapeManager</code>&#39;s <code>updateTreeCompressor</code>. It is used to schedule updates of its R-tree. However, it is run at the beginning of every other operation so Dmitry says it is no longer needed. After the compressor was removed we are safe to delete the node normally so there would be no need for such hack code.</p>
-<h2 id="Path-tool-crashing-when-editing-calligraphic-shapes"><a href="#Path-tool-crashing-when-editing-calligraphic-shapes" class="headerlink" title="Path tool crashing when editing calligraphic shapes"></a>Path tool crashing when editing calligraphic shapes</h2><p>Calligraphic shapes, coming from Karbon, is a shape created by hand-drawing. It has many path points and editing it using path tool usually leads to a crash. Dmitry tested it with ASan and discovered the problem occurs because the path points, which is fetched in the GUI thread to paint the canvas, could be deleted when editing the shape. He suggests to apply a lock to the canvas, not allowing the image and GUI threads to access the shapes concurrently.</p>
-<h2 id="Keeping-selections-after-undo-redoing"><a href="#Keeping-selections-after-undo-redoing" class="headerlink" title="Keeping selections after undo/redoing"></a>Keeping selections after undo/redoing</h2><p>This challenge is a smaller one. The shape selections were not kept, since they are not part of the layer. It was owned by the layer&#39;s shape manager, though, but a cloned layer would take a brand-new shape manager. In addition <code>undo()</code> and <code>redo()</code> will now replace the whole layer, so pointers to original shapes are no longer valid. This means merely keeping the selections from the shape manager would not work. The solution is to map the selected shapes to the cloned layer, which would be kept in the undo command. The strategy I use is similar to what we have done for layers: go through the whole heirarchy of the old layer and push everything into a queue; go through the heirarchy of the cloned layer in the same order and each time take the first shape in the queue; if the popped shape is in the selection, we add its counterpart in the cloned layer to our new selection.</p>
-<p>For now the tools should be working and the merge request is prepared for final review. Hopefully it would make its way to <code>master</code> soon.</p>
+        <p><span class='ts-lang-en ts-langs ts-langs-show ts-langs-block'>I do not know why exactly I am so stubborn to insist on making this
+site multilingual, and in a way that you may see multiple languages
+at the same time. But it is something.</span>
+<span class='ts-lang-zh-CN ts-langs ts-langs-block'>我自己也不明白为什么我执拗得一定要把这网站做成多语言的，还是叫人
+能同时看到多种语言的那种。但聊胜于无吧。</span></p>
+<a id="more"></a>
+<h1 id="A-weird-thing-about-HexoHexo-的诡异事件"><a href="#A-weird-thing-about-HexoHexo-的诡异事件" class="headerlink" title="A weird thing about HexoHexo 的诡异事件"></a><span class='ts-langs-group'><span class='ts-lang-en ts-langs ts-langs-show'>A weird thing about Hexo</span><span class='ts-lang-zh-CN ts-langs'>Hexo 的诡异事件</span></span></h1><p><span class='ts-lang-en ts-langs ts-langs-show ts-langs-block'>The <em>first</em> weird thing I got, when I was trying to figure out
+<a target="_blank" rel="noopener" href="https://github.com/next-theme/hexo-theme-next">hexo-theme-next</a>: sometimes <code>hexo server</code> gives
+the perfect result, but when I <code>hexo generate</code> or <code>hexo deploy</code>,
+nothing will be correct. Everything is just malformed, and it
+does not change even if I <code>hexo clean</code>.</span>
+<span class='ts-lang-zh-CN ts-langs ts-langs-block'>我在折腾 <a target="_blank" rel="noopener" href="https://github.com/next-theme/hexo-theme-next">hexo-theme-next</a> 的时候碰到的第一个诡异事件是：
+有时候 <code>hexo server</code> 给出了个无懈可击的结果，但只要一 <code>hexo generate</code>
+或者 <code>hexo deploy</code>，全完蛋。整个网站看着都非常诡异，甚至我
+<code>hexo clean</code> 了之后也没有丝毫变化。</span></p>
+<p><span class='ts-lang-en ts-langs ts-langs-show ts-langs-block'>After digging a lot into the source code, and enabling <code>--debug</code>,
+I finally found that there are some backup files that are also
+processed. And the content of those files <em>does</em> correspond to
+the wrong contents on the site. &quot;Okay,&quot; hereby I say, &quot;this
+behaviour is indeed ridiculous.&quot;</span>
+<span class='ts-lang-zh-CN ts-langs ts-langs-block'>钻进源码里东张西望了好久，再合着 <code>--debug</code> 的加成，我终于看到了一些备份文件
+也被处理了。而其内容<strong>确然</strong>是应了网站上有问题的东西。「行吧，」如是我说，
+「是事直令人齿冷。」</span></p>
+<p><span class='ts-lang-en ts-langs ts-langs-show ts-langs-block'>And thus I added the ignore rules to ignore all such files,
+and everything is hopefully back in place.</span>
+<span class='ts-lang-zh-CN ts-langs ts-langs-block'>所以我加了忽略规则来忽略这种文件，世界终于清净了，谢天谢地。</span></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">ignore:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">&quot;**/*~&quot;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">&quot;**/#*&quot;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">&quot;**/.#*&quot;</span></span><br></pre></td></tr></table></figure>
+<h1 id="NexT-39-s-language-switcherNexT-的语言切换器"><a href="#NexT-39-s-language-switcherNexT-的语言切换器" class="headerlink" title="NexT&#39;s language switcherNexT 的语言切换器"></a><span class='ts-langs-group'><span class='ts-lang-en ts-langs ts-langs-show'>NexT&#39;s language switcher</span><span class='ts-lang-zh-CN ts-langs'>NexT 的语言切换器</span></span></h1><p><span class='ts-lang-en ts-langs ts-langs-show ts-langs-block'>That is an even more terrible part that comes in. Yes,
+<a target="_blank" rel="noopener" href="https://github.com/next-theme/hexo-theme-next">NexT</a> comes with such a thing called a
+&quot;language switcher,&quot; but it never takes you to a right
+place. I cannot even get Hexo generate pages for
+different languages, no matter how I change the <code>language</code>
+parameter in <code>_config.yml</code>. So whenever I click on the
+language switcher, I got a 404. And it is hidden at the very
+bottom of the page --- How should one expect their visitor
+to dig into the deepest hole before they can switch languages?</span>
+<span class='ts-lang-zh-CN ts-langs ts-langs-block'></span></p>
+<p><span class='ts-lang-en ts-langs ts-langs-show ts-langs-block'>So, well, since NexT&#39;s language switcher sucks, and multi-page
+style multi-language implementation is not feasible, why not just
+put everything all together? NexT at least provides a way to
+customize what texts are shown... in <code>languages.yml</code>.</span>
+<span class='ts-lang-zh-CN ts-langs ts-langs-block'></span></p>
+<p><span class='ts-lang-en ts-langs ts-langs-show ts-langs-block'>The main idea is to merge NexT&#39;s default translations into one.
+I made a Perl script for this. The text for every language is a
+<code>span</code>, and they are next to each other. Use css to put a divider
+between every visible <code>span</code>. Whether a language is shown is controlled
+by a JavaScript program that adds or removes classes from the elements.</span>
+<span class='ts-lang-zh-CN ts-langs ts-langs-block'></span></p>
+
 
     </div>
 
@@ -364,7 +402,7 @@
   </li>
   <li class="post-copyright-link">
       <strong><span class='ts-langs-group'><span class='ts-lang-en ts-langs ts-langs-show'>Post link</span><span class='ts-lang-zh-CN ts-langs ts-langs-show'>本文链接</span></span>: </strong>
-      <a href="http://tusooa.github.io/2019/08/24/Pay-another-respect-to-kritacommand-which-we-are-going-beyond/" title="Pay another respect to kritacommand--which we are going beyond">http://tusooa.github.io/2019/08/24/Pay-another-respect-to-kritacommand-which-we-are-going-beyond/</a>
+      <a href="http://tusooa.github.io/2020/10/10/Some-multilingual-hacks-on-Hexo/" title="&lt;span class&#x3D;&#39;ts-langs-group&#39;&gt; &lt;span class&#x3D;&#39;ts-lang-en ts-langs ts-langs-show ts-langs-block&#39;&gt; Some multilingual hacks on Hexo &lt;&#x2F;span&gt; &lt;span class&#x3D;&#39;ts-lang-zh-CN ts-langs ts-langs-show ts-langs-block&#39;&gt; 瞎折腾Hexo的多语言 &lt;&#x2F;span&gt; &lt;&#x2F;span&gt;">http://tusooa.github.io/2020/10/10/Some-multilingual-hacks-on-Hexo/</a>
   </li>
   <li class="post-copyright-license">
     <strong><span class='ts-langs-group'><span class='ts-lang-en ts-langs ts-langs-show'>Copyright Notice</span><span class='ts-lang-zh-CN ts-langs ts-langs-show'>版权声明</span></span>:  </strong><span class='ts-langs-group'><span class='ts-lang-en ts-langs ts-langs-show'>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</span><span class='ts-lang-zh-CN ts-langs ts-langs-show'>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</span></span>
@@ -373,24 +411,21 @@
 </div>
 
           <div class="post-tags">
-              <a href="/tags/kde/" rel="tag"># kde</a>
-              <a href="/tags/krita/" rel="tag"># krita</a>
-              <a href="/tags/c/" rel="tag"># c++</a>
-              <a href="/tags/tech/" rel="tag"># tech</a>
+              <a href="/tags/%E5%9D%91/" rel="tag"># 坑</a>
+              <a href="/tags/javascript/" rel="tag"># javascript</a>
+              <a href="/tags/hexo/" rel="tag"># hexo</a>
+              <a href="/tags/css/" rel="tag"># css</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2019/08/21/The-Sprint/" rel="prev" title="The Sprint">
-                  <i class="fa fa-chevron-left"></i> The Sprint
+                <a href="/2020/10/01/Fix-firefox-address-bar-clickSelectsAll-bug/" rel="prev" title="Fix firefox address bar clickSelectsAll bug (Spoiler: no re-compilation required.)">
+                  <i class="fa fa-chevron-left"></i> Fix firefox address bar clickSelectsAll bug (Spoiler: no re-compilation required.)
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2020/10/01/Fix-firefox-address-bar-clickSelectsAll-bug/" rel="next" title="Fix firefox address bar clickSelectsAll bug (Spoiler: no re-compilation required.)">
-                  Fix firefox address bar clickSelectsAll bug (Spoiler: no re-compilation required.) <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>
@@ -505,9 +540,9 @@
 </script>
 <script>
   var disqus_config = function() {
-    this.page.url = "http://tusooa.github.io/2019/08/24/Pay-another-respect-to-kritacommand-which-we-are-going-beyond/";
-    this.page.identifier = "2019/08/24/Pay-another-respect-to-kritacommand-which-we-are-going-beyond/";
-    this.page.title = "Pay another respect to kritacommand--which we are going beyond";
+    this.page.url = "http://tusooa.github.io/2020/10/10/Some-multilingual-hacks-on-Hexo/";
+    this.page.identifier = "2020/10/10/Some-multilingual-hacks-on-Hexo/";
+    this.page.title = "<span class='ts-langs-group'> <span class='ts-lang-en ts-langs ts-langs-show ts-langs-block'> Some multilingual hacks on Hexo </span> <span class='ts-lang-zh-CN ts-langs ts-langs-show ts-langs-block'> 瞎折腾Hexo的多语言 </span> </span>";
     };
   NexT.utils.loadComments('#disqus_thread', () => {
     if (window.DISQUS) {

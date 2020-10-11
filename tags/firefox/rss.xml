@@ -16,6 +16,8 @@
         <category>坑</category>
         <category>javascript</category>
         <category>tech</category>
+        <category>hexo</category>
+        <category>css</category>
         <category>帜</category>
         <category>复杂</category>
         <item>
@@ -30,14 +32,14 @@
             <description><![CDATA[ &lt;p&gt;A couple of months ago, I opened my Firefox as usual, I found out that
 when I click on the address bar, it dared to select everything in it
 as if any creepy browser would do! The first thing I did is to check
-the &lt;code&gt;clickSelectsAll&lt;/code&gt; pref – what I always do first after getting a
+the &lt;code&gt;clickSelectsAll&lt;/code&gt; pref -- what I always do first after getting a
 new install of Firefox on Windows is setting this pref to &lt;code&gt;false&lt;/code&gt;,
 and setting &lt;code&gt;doubleClickSelectsAll&lt;/code&gt; pref to &lt;code&gt;true&lt;/code&gt;: that is the default
-behaviour for Firefox on GNU/Linux… that time at least…&lt;/p&gt;
+behaviour for Firefox on GNU/Linux... that time at least...&lt;/p&gt;
 &lt;p&gt;Much to my disappointment, the pref are setting correctly, but nothing
 works. I tried to search for this, but without success, maybe since
 this bug was so new, or I was to silly to apply the right keywords
-(huh, maybe the latter one?). So I created an account on Mozilla’s
+(huh, maybe the latter one?). So I created an account on Mozilla&amp;#39;s
 bugtracker just to open &lt;a href=&#34;https://bugzilla.mozilla.org/show_bug.cgi?id=1629135&#34;&gt;a bug&lt;/a&gt;. At the same time I switched
 back to the ESR version of Firefox, which rid me (till recently) of
 this stupid address bar but still granted me security updates. A
@@ -58,16 +60,16 @@ of users to make software behave the way they want, without necessarily
 being a developer. I complained that many free/libre software does not
 excel in this aspect, using Firefox &gt;=75 as an example.&lt;/p&gt;
 &lt;p&gt;The thing Firefox developers does, by removing the &lt;code&gt;clickSelectsAll&lt;/code&gt;
-prefs, is actually somewhat limiting users’ freedom, as customization
+prefs, is actually somewhat limiting users&amp;#39; freedom, as customization
 becomes harder and harder. This kind of freedom has been brought up
-by a KDE person as &lt;a href=&#34;https://phabricator.kde.org/T11091&#34;&gt;a goal&lt;/a&gt; called “freedom out of the box.”
+by a KDE person as &lt;a href=&#34;https://phabricator.kde.org/T11091&#34;&gt;a goal&lt;/a&gt; called &amp;quot;freedom out of the box.&amp;quot;
 In short, it aims to make changing the behaviour of a program
 as easy as just using it, probably unifying the interface where a program
 is used and where a program is customized.&lt;/p&gt;
 &lt;p&gt;And that is reasonable: no one should have to spend quite a long time
 reading an extraordinarily large code base just to make a tiny little
 change that would significantly improve their lives. We will simply not
-have that much time. I know tweaking system is fun… (should I say
+have that much time. I know tweaking system is fun... (should I say
 addictive?) but still, instant result is always a good-to-have.&lt;/p&gt;
 &lt;h1 id=&#34;The-solution&#34;&gt;&lt;a href=&#34;#The-solution&#34; class=&#34;headerlink&#34; title=&#34;The solution&#34;&gt;&lt;/a&gt;The solution&lt;/h1&gt;&lt;p&gt;For Firefox, we do have a &lt;a href=&#34;https://superuser.com/questions/540851/go-back-to-not-selecting-the-whole-url-when-i-click-the-address-bar&#34;&gt;solution&lt;/a&gt; without needing to
 recompile. That is, to change the &lt;code&gt;omni.ja&lt;/code&gt; pack in the Firefox

@@ -21,7 +21,7 @@
         <id>http://tusooa.github.io/2020/10/10/Some-multilingual-hacks-on-Hexo/</id>
         <title>&lt;span class=&#39;ts-langs-group&#39;&gt; &lt;span class=&#39;ts-lang-en ts-langs ts-langs-show ts-langs-block&#39;&gt; Some multilingual hacks on Hexo &lt;/span&gt; &lt;span class=&#39;ts-lang-zh-CN ts-langs ts-langs-show ts-langs-block&#39;&gt; 瞎折腾Hexo的多语言 &lt;/span&gt; &lt;/span&gt;</title>
         <link rel="alternate" href="http://tusooa.github.io/2020/10/10/Some-multilingual-hacks-on-Hexo/"/>
-        <content type="html">&lt;p&gt;&lt;span class=&#39;ts-lang-en ts-langs ts-langs-show ts-langs-block&#39;&gt;I do not know why exactly I am so stubborn to insist on making this
+        <content type="html">&lt;style type=&#34;text/css&#34;&gt;.ts-langs:not(.ts-langs-show) { display: none; }&lt;/style&gt;&lt;p&gt;&lt;span class=&#39;ts-lang-en ts-langs ts-langs-show ts-langs-block&#39;&gt;I do not know why exactly I am so stubborn to insist on making this
 site multilingual, and in a way that you may see multiple languages
 at the same time. But it is something.&lt;/span&gt;
 &lt;span class=&#39;ts-lang-zh-CN ts-langs ts-langs-block&#39;&gt;我自己也不明白为什么我执拗得一定要把这网站做成多语言的，还是叫人

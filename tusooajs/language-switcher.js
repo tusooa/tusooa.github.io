@@ -113,7 +113,10 @@ if (! window.Tusooa.LanguageSwitcher) {
       node.classList.add(s.shownLangClass);
     }
 
-    s.displayedLangs.push(lang);
+    // Avoid re-adding a language
+    if (! s.displayedLangs.includes(lang)) {
+      s.displayedLangs.push(lang);
+    }
     return s.SUCCESS;
   };
 

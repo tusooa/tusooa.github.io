@@ -1388,7 +1388,7 @@ pre code {
 .sidebar-dimmer {
   display: none;
 }
-@media (max-width: 767px) {
+@media (max-width: 991px) {
   .sidebar-dimmer {
     background: #000;
     display: block;
@@ -2723,7 +2723,7 @@ hr {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #ff7ae8;
+  background: #b8ff87;
   display: inline-block;
   margin-right: 3px;
   transform: translateY(-2px);
